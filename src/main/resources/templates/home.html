@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.css">
+</head>
+<body>
+<form id="form-token">
+  <div class="form-group">
+    <label for="token">Token</label>
+    <input type="text" class="form-control" id="token" name="token" placeholder="Enter token">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+	<button id="btn-copy" type="button" class="btn btn-secondary">Copiar token</button>
+</form>
+<div id="div-table-ranking" style="display:none;">
+	<table id="table-ranking">
+	  <thead>
+	    <tr>
+	      <th data-field="state" data-checkbox="true"></th>
+	      <th data-field="position" data-sortable="true">#</th>
+	      <th data-field="managerName" data-sortable="true">Manager</th>
+	      <th data-field="teamPoints" data-sortable="true">Puntos</th>
+	      <th data-field="teamValueFormatted" data-sortable="true" data-sort-name="teamValue">Valor</th>
+	      <th data-field="teamMoneyFormatted" data-sortable="true" data-sort-name="teamMoney">Dinero</th>
+	    </tr>
+	  </thead>
+	</table>
+    <input type="number" class="form-control" id=diffValueBuyoutClause name="diffValueBuyoutClause" placeholder="Enter difference">
+	<button id="btn-info" type="button" class="btn btn-success">Ver Jugadores</button>
+</div>
+<div id="div-table-players" style="display:none;">
+	<table id="table-players">
+	  <thead>
+	    <tr>
+	      <th data-field="playerName" data-sortable="true">Jugador</th>
+	      <th data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
+	      <th data-field="playerPoints" data-sortable="true">Puntos</th>
+	      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
+	      <th data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
+	      <th data-field="upDownMarketValue" data-sortable="true" data-filter-control="select">Up/Down</th>
+	      <th data-field="diffMarketValueFormatted" data-sortable="true" data-sort-name="diffMarketValue">Diff</th>
+	      <th data-field="playerBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerBuyoutClause">Cláusula</th>
+	      <th data-field="playerEndBuyoutClauseFormatted" data-sortable="true" data-filter-control="input" data-sort-name="playerEndBuyoutClause">Fin Cláusula</th>
+	    </tr>
+	  </thead>
+	</table>
+</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.js"></script>
+<script>
+	var $form = $("#form-token");
+  	var $table = $("#table-ranking");
+  	var $tableplayers = $("#table-players");
+  	var $divtable = $("#div-table-ranking");
+  	var $btninfo = $("#btn-info");
+  	var $divtableplayers = $("#div-table-players");
+    $table.bootstrapTable({
+ 	   sorting: true,
+ 	   showColumns: true,
+ 	   clickToSelect:true,
+ 	   showMultiSort: true,
+ 	   showMultiSortButton: true,
+ 	   sortName: "position",
+ 	   sortOrder: "asc"
+ 	   });
+    $tableplayers.bootstrapTable({
+ 	   sorting: true,
+ 	   showColumns: true,
+ 	   showMultiSort: true,
+ 	   showMultiSortButton: true,
+ 	   pagination: true,
+ 	   showExtendedPagination: true,
+ 	   filterControl: true
+ 	   });
+  	$form.submit(function( event ) {
+	  event.preventDefault();
+	  	$divtable.hide();
+	    $.ajax({
+	           type: "GET",
+	           url: "/fantasyJson/ranking",
+	           data: $(this).serialize(), // serializes the form's elements.
+	           success: function(data)
+	           {
+	               $table.bootstrapTable("refreshOptions",{
+	            	   data: data});
+	             	$divtable.show();
+	           }
+	         });
+	});
+  	$("#btn-copy").click(function( event ) {
+	  	$("#token").focus();
+	  	$("#token").select();
+	     document.execCommand('copy');
+  	});
+  	$btninfo.click(function( event ) {
+  		var teams = [];
+  		var json = JSON.parse(JSON.stringify($table.bootstrapTable('getSelections')));
+  		$.each(json, function(idx, obj) {
+  			teams.push(obj.teamId);
+  		});
+  		var params = "token=" + $("#token").val() + "&teams=" + teams.toString() + "&diffValueBuyoutClause=" + $("#diffValueBuyoutClause").val();
+	  	$divtableplayers.hide();
+	    $.ajax({
+	           type: "GET",
+	           url: "/fantasyJson/players",
+	           data: params, 
+	           success: function(data)
+	           {
+	               $tableplayers.bootstrapTable("refreshOptions",{
+	            	   data: data});
+	             	$divtableplayers.show();
+	             	 $('html, body').animate({
+	             		 scrollTop: $divtableplayers.offset().top
+	             		 }, 1000);
+	           }
+	         });
+  	});
+</script>
+</body>
+</html>
