@@ -23,6 +23,7 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.nito.fantasy.dto.League;
 import com.nito.fantasy.dto.Player;
 import com.nito.fantasy.dto.Ranking;
+import com.nito.fantasy.model.dynamodb.FantasyNewDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerHistoryDB;
 import com.nito.fantasy.model.marca.FantasyLeague;
@@ -58,22 +59,32 @@ public class FantasyController {
         return "market";
     }
     
-    @RequestMapping(value = "/udpate/history", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/update/history", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public List<FantasyPlayerHistoryDB> udpatehistorydb(@RequestParam(name="token", required=true) String token, @RequestParam(name="league", required=true) String league) {
         return fantasyService.updatePlayersHistoryfromDB(token, league);
     }
     
-    @RequestMapping(value = "/udpate/players", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/update/players", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public List<FantasyPlayerDB> udpateplayersdb(@RequestParam(name="token", required=true) String token, @RequestParam(name="league", required=true) String league) {
         return fantasyService.updatePlayersfromDB(token, league);
     }
     
+    @RequestMapping(value = "/update/news", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List<FantasyNewDB> udpatenewsdb(
+    		@RequestParam(name="token", required=true) String token, 
+    		@RequestParam(name="league", required=true) String league) {
+        return fantasyService.updateNewsfromDB(token, league);
+    }
+    
     @RequestMapping(value = "/fantasyJson/market", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List<Player> fantasyMarket(@RequestParam(name="token", required=true) String token) {
-        List<FantasyMarket> fantasyMarket = fantasyService.getMarketFantasy(token);
+    public List<Player> fantasyMarket(
+    		@RequestParam(name="token", required=true) String token, 
+    		@RequestParam(name="league", required=true) String league) {
+        List<FantasyMarket> fantasyMarket = fantasyService.getMarketFantasy(token, league);
         return fantasyService.convertToDtoPlayersMarket(fantasyMarket);
     }
     
@@ -88,7 +99,9 @@ public class FantasyController {
     
     @RequestMapping(value = "/fantasyJson/ranking", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List<Ranking> fantasyRanking(@RequestParam(name="token", required=true) String token, @RequestParam(name="league", required=true) String league) {
+    public List<Ranking> fantasyRanking(
+    		@RequestParam(name="token", required=true) String token, 
+    		@RequestParam(name="league", required=true) String league) {
         List<FantasyRanking> fantasyRanking = fantasyService.getRankingFantasy(token,league);
         return fantasyRanking.stream()
         		.map(n -> n.convertToDto())
@@ -135,6 +148,7 @@ public class FantasyController {
     		@RequestParam(name="league", required=true) String league,
     		@RequestParam(name="updatedb", required=false) String updatedb) {
     	logger.info("LocalDateTime.now().plusDays(1):"+LocalDateTime.now().plusDays(1));
+    	logger.info("teams:"+teams);
     	logger.info("diffValueBuyoutClause:"+diffValueBuyoutClause);
     	logger.info("daysBuyoutClause:"+daysBuyoutClause);
     	logger.info("league:"+league);
@@ -146,11 +160,12 @@ public class FantasyController {
         	fantasyPlayersDB = fantasyService.getFantasyPlayersFromDB(league);
     	}
     	List<String> teamsList = new ArrayList<>(Arrays.asList(teams.split(",")));
+    	logger.info("teamsList.size():"+teamsList.size());
         return fantasyPlayersDB
 			  .stream()
       		  .map(n -> n.convertToDto())
 			  .filter(n -> diffValueBuyoutClause == null || (n.getPlayerBuyoutClause() - n.getPlayerValue() < (diffValueBuyoutClause*1000000)))
-			  .filter(n -> teamsList == null || teamsList.size() == 0 || teamsList.contains(n.getTeamId()))
+			  .filter(n -> "".equals(teams) || teams == null || teamsList == null || teamsList.size() == 0 || teamsList.contains(n.getTeamId()))
 			  .filter(n -> daysBuyoutClause == null || n.getPlayerEndBuyoutClause().isBefore(LocalDateTime.now().plusDays(daysBuyoutClause)))
 			  .collect(Collectors.toList());
     }

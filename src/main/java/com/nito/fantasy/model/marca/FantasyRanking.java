@@ -84,6 +84,7 @@ public class FantasyRanking {
     
     public Ranking convertToDto() {
     	Ranking ranking = new Ranking();
+    	ranking.setState(true);
     	ranking.setTeamPoints(this.points);
     	ranking.setPosition(this.position);
     	ranking.setManagerName(this.team.getManager().getManagerName());

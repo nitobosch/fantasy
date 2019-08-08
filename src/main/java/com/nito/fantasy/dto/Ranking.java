@@ -1,6 +1,7 @@
 package com.nito.fantasy.dto;
 
 public class Ranking {
+	private boolean state;
 	private Integer position;
 	private String managerName;
 	private String teamId;
@@ -59,6 +60,12 @@ public class Ranking {
 	}
 	public void setTeamMoney(Integer teamMoney) {
 		this.teamMoney = teamMoney;
+	}
+	public boolean isState() {
+		return state;
+	}
+	public void setState(boolean state) {
+		this.state = state;
 	}
 	
 

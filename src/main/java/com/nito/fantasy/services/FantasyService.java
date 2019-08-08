@@ -2,6 +2,7 @@ package com.nito.fantasy.services;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -21,14 +22,17 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.nito.fantasy.dto.Player;
+import com.nito.fantasy.model.dynamodb.FantasyNewDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerHistoryDB;
 import com.nito.fantasy.model.marca.FantasyHistory;
 import com.nito.fantasy.model.marca.FantasyLeague;
 import com.nito.fantasy.model.marca.FantasyMarket;
+import com.nito.fantasy.model.marca.FantasyNew;
 import com.nito.fantasy.model.marca.FantasyPlayerMarket;
 import com.nito.fantasy.model.marca.FantasyRanking;
 import com.nito.fantasy.model.marca.FantasyTeam;
+import com.nito.fantasy.repositories.dynamodb.FantasyNewDBRepository;
 import com.nito.fantasy.repositories.dynamodb.FantasyPlayerDBRepository;
 import com.nito.fantasy.repositories.dynamodb.FantasyPlayerHistoryDBRepository;
 import com.nito.fantasy.util.Formatter;
@@ -47,6 +51,9 @@ public class FantasyService {
 
     @Autowired
     private FantasyPlayerHistoryDBRepository fantasyPlayerHistoryDBRepository;
+
+    @Autowired
+    private FantasyNewDBRepository fantasyNewDBRepository;
 	
     public List<FantasyLeague> getLeaguesFantasy(String authToken) {
     	
@@ -69,19 +76,20 @@ public class FantasyService {
         
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://api.laligafantasymarca.com/api/v4/leagues/"+leagueId+"/ranking";
+        logger.info(url);
         ResponseEntity<List<FantasyRanking>> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(headers), new ParameterizedTypeReference<List<FantasyRanking>>(){});
         List<FantasyRanking> fantasyRanking = response.getBody();
         return fantasyRanking;
     }
 	
-    public List<FantasyMarket> getMarketFantasy(String authToken) {
+    public List<FantasyMarket> getMarketFantasy(String authToken, String leagueId) {
     	
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));        
         headers.add("Authorization", "Bearer "+authToken );
         
         RestTemplate restTemplate = new RestTemplate();
-        String url = "https://api.laligafantasymarca.com/api/v3/league/0149334/market";
+        String url = "https://api.laligafantasymarca.com/api/v3/league/"+leagueId+"/market";
         ResponseEntity<List<FantasyMarket>> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(headers), new ParameterizedTypeReference<List<FantasyMarket>>(){});
         List<FantasyMarket> fantasyMarket = response.getBody();
         return fantasyMarket;
@@ -127,6 +135,20 @@ public class FantasyService {
         ResponseEntity<List<FantasyHistory>> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(headers), new ParameterizedTypeReference<List<FantasyHistory>>(){});
         List<FantasyHistory> fantasyHistory = response.getBody();
         return fantasyHistory;
+    }
+	
+    public List<FantasyNew> getNewsFantasy(String authToken, String league) {
+    	
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));        
+        headers.add("Authorization", "Bearer "+authToken );
+        
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "https://api.laligafantasymarca.com/api/v3/leagues/"+league+"/news/1";
+    	logger.info("url:"+url);
+        ResponseEntity<List<FantasyNew>> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(headers), new ParameterizedTypeReference<List<FantasyNew>>(){});
+        List<FantasyNew> fantasyNews = response.getBody();
+        return fantasyNews;
     }
     
     public List<Player> convertToDtoPlayersMarket(List<FantasyMarket> fantasyMarket){
@@ -207,8 +229,6 @@ public class FantasyService {
     	List<FantasyPlayerHistoryDB> playersHistoryDB = getFantasyPlayersHistoryFromDB(leagueId);
 
     	List<FantasyHistory> fantasyHistory = getHistoryFantasy(authToken, leagueId);
-    	
-    	FantasyTeam teamNito = getTeamFantasy(authToken, leagueId, "252706");
 
     	for (FantasyHistory historyObj: fantasyHistory){ 
         	logger.info("Player:"+historyObj.getPlayer().getId()+" - "+historyObj.getPlayer().getNickname());
@@ -229,7 +249,9 @@ public class FantasyService {
     			fantasyPlayerHistoryDBRepository.save(playerDB);
     		}
     	}
-		
+
+    	
+//    	FantasyTeam teamNito = getTeamFantasy(authToken, leagueId, "252706");
 //		playersHistoryDB = fantasyPlayerHistoryDBRepository.findByLeagueId(leagueId); 
 //		
 //    	for (com.nito.fantasy.model.marca.Player player: teamNito.getPlayers()){ 
@@ -255,6 +277,8 @@ public class FantasyService {
     	List<FantasyPlayerDB> playersDB = clearFantasyPlayersFromDB(leagueId);
     	List<FantasyPlayerDB> new_playersDB = new ArrayList<>();
     	List<FantasyPlayerHistoryDB> playersHistoryDB = updatePlayersHistoryfromDB(authToken, leagueId);
+    	List<FantasyNewDB> playersNewsDB = updateNewsfromDB(authToken, leagueId);
+    	
         List<FantasyRanking> fantasyRanking = getRankingFantasy(authToken, leagueId);
 
     	for (FantasyRanking rankingObj: fantasyRanking){
@@ -271,19 +295,30 @@ public class FantasyService {
         		newPlayer.setPlayerMarketValue(player.getPlayerMaster().getMarketValue());
         		newPlayer.setPlayerBuyoutClause(player.getBuyoutClause());
         		newPlayer.setPlayerEndBuyoutClause(player.getBuyoutClauseLockedEndTime());
-        		
-        		FantasyPlayerHistoryDB playerPurchase = playersHistoryDB.stream()
-        				  .filter(p -> "purchase".equals(p.getOperation()))
-        				  .filter(p -> player.getPlayerMaster().getId().equals(p.getPlayerId()))
-        				  .filter(p -> leagueId.equals(p.getLeagueId()))
-        				  .filter(p -> p.getDate() != null)
-        				  .findAny()
-        				  .orElse(null);
 
         		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(player.getPlayerMaster().getId());
         		
         		if (playerMarket != null) {
         			newPlayer.setPlayerMarketValueYesterday(playerMarket.get(playerMarket.size()-2).getMarketValue());
+            		
+            		FantasyPlayerHistoryDB playerPurchase = playersHistoryDB.stream()
+            				  .filter(p -> "purchase".equals(p.getOperation()))
+            				  .filter(p -> player.getPlayerMaster().getId().equals(p.getPlayerId()))
+            				  .filter(p -> leagueId.equals(p.getLeagueId()))
+            				  .filter(p -> p.getDate() != null)
+            				  .sorted(Comparator.comparing(FantasyPlayerHistoryDB::getDate).reversed())
+            				  .findFirst()
+            				  .orElse(null);
+            		
+            		FantasyNewDB playerNewPurchase = playersNewsDB.stream()
+            				  .filter(p -> "purchase".equals(p.getOperation()))
+            				  .filter(p -> player.getPlayerMaster().getNickname().equals(p.getPlayerName()))
+            				  .filter(p -> leagueId.equals(p.getLeagueId()))
+            				  .filter(p -> p.getDate() != null)
+            				  .sorted(Comparator.comparing(FantasyNewDB::getDate).reversed())
+            				  .findFirst()
+            				  .orElse(null);
+            		
             		if (playerPurchase != null) {
                 		Integer marketValuePurchaseDate = playerMarket.stream()
                 				  .filter(p -> p.getDate().getYear() == playerPurchase.getDate().getYear() && p.getDate().getDayOfYear() == playerPurchase.getDate().getDayOfYear())
@@ -293,6 +328,15 @@ public class FantasyService {
                 		newPlayer.setPlayerPurchaseDate(playerPurchase.getDate());
                 		newPlayer.setPlayerMarketValuePurchaseDate(marketValuePurchaseDate);
                 		newPlayer.setPlayerPurchaseAmount(playerPurchase.getMoney());
+            		}else if (playerNewPurchase != null) {
+                		Integer marketValuePurchaseDate = playerMarket.stream()
+              				  .filter(p -> p.getDate().getYear() == playerNewPurchase.getDate().getYear() && p.getDate().getDayOfYear() == playerNewPurchase.getDate().getDayOfYear())
+              				  .findAny()
+              				  .orElse(null)
+              				  .getMarketValue();
+	              		newPlayer.setPlayerPurchaseDate(playerNewPurchase.getDate());
+	              		newPlayer.setPlayerMarketValuePurchaseDate(marketValuePurchaseDate);
+	              		newPlayer.setPlayerPurchaseAmount(playerNewPurchase.getMoney());
             		}
         		}    
         		new_playersDB.add(newPlayer);
@@ -301,6 +345,32 @@ public class FantasyService {
     	fantasyPlayerDBRepository.saveAll(new_playersDB);
     	
     	return fantasyPlayerDBRepository.findByLeagueId(leagueId); 
+    }
+	
+    public List<FantasyNewDB> updateNewsfromDB(String authToken, String leagueId) {
+
+    	List<FantasyNewDB> newsDB = getFantasyNewsFromDB(leagueId);
+
+    	List<FantasyNew> fantasyNews = getNewsFantasy(authToken, leagueId);
+
+    	for (FantasyNew obj: fantasyNews){ 
+        	logger.info("Title:"+obj.getMsg());
+    		FantasyNewDB objDB = null;
+    		if ("Operación de mercado".equals(obj.getTitle())) {
+        		if (newsDB != null) {
+        			objDB = newsDB.stream()
+          				  .filter(p -> obj.getId().equals(p.getId()))
+          				  .findAny()
+          				  .orElse(null);	
+        		}    		
+        		if (objDB == null) {
+        			objDB = obj.convertToEntityDB(leagueId);
+        			fantasyNewDBRepository.save(objDB);
+        		}
+    		}
+    	}
+    	
+    	return (List<FantasyNewDB>) fantasyNewDBRepository.findByLeagueId(leagueId); 
     }
 	
     public List<FantasyPlayerDB> clearFantasyPlayersFromDB(String leagueId) {
@@ -338,5 +408,17 @@ public class FantasyService {
         players = (List<FantasyPlayerHistoryDB>) fantasyPlayerHistoryDBRepository.findByLeagueId(leagueId);
         
         return players;
+    }
+	
+    public List<FantasyNewDB> getFantasyNewsFromDB(String leagueId) {
+
+    	List<FantasyNewDB> news = new ArrayList<>();
+        dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB);
+        CreateTableRequest tableRequest = dynamoDBMapper.generateCreateTableRequest(FantasyNewDB.class);
+        tableRequest.setProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
+        TableUtils.createTableIfNotExists(amazonDynamoDB, tableRequest);
+        news = (List<FantasyNewDB>) fantasyNewDBRepository.findByLeagueId(leagueId);
+        
+        return news;
     }
 }

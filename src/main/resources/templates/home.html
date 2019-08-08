@@ -7,72 +7,122 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.css">
+	<style type="text/css">
+		.row+.row {
+		    margin-top: 1rem;
+		}
+	</style>
 </head>
 <body>
-<form id="form-token">
-  <div class="form-group">
-    <label for="token">Token</label>
-    <input type="text" class="form-control" id="token" name="token" placeholder="Enter token">
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-	<button id="btn-copy" type="button" class="btn btn-secondary">Copiar token</button>
-</form>
-<div id="div-leagues" style="display:none; margin-top:10px;">
-</div>
-<div id="div-ranking" style="display:none;">
-	<table id="table-ranking">
-	  <thead>
-	    <tr>
-	      <th data-field="state" data-checkbox="true"></th>
-	      <th data-field="position" data-sortable="true">#</th>
-	      <th data-field="managerName" data-sortable="true">Manager</th>
-	      <th data-field="teamPoints" data-sortable="true">Puntos</th>
-	      <th data-field="teamValueFormatted" data-sortable="true" data-sort-name="teamValue">Valor</th>
-	      <th data-field="teamMoneyFormatted" data-sortable="true" data-sort-name="teamMoney">Dinero</th>
-	    </tr>
-	  </thead>
-	</table>
-	<form id="form-ranking">
-	  <div class="form-group">
-	    <label for="exampleInputEmail1">Diferencia entre Valor de Mercado y Cláusula (en Millones)</label>
-    	<input type="number" class="form-control" id="diffValueBuyoutClause" name="diffValueBuyoutClause" placeholder="Enter difference">
-	  </div>
-	  <div class="form-group">
-	    <label for="exampleInputEmail1">Días para fin de cláusula</label>
-    	<input type="number" class="form-control" id="chkDaysBuyoutClause" name="daysBuyoutClause" placeholder="Enter days">
-	  </div>
-	  <div class="form-check">
-	    <input type="checkbox" class="form-check-input" id="chkUpdateDB" name="updatedb">
-	    <label class="form-check-label" for="chkUpdateDB">Update DB</label>
-	  </div>
-      <input type="hidden" id="form-ranking-league" name="league">
-	  <button type="submit" class="btn btn-success">Mostrar Jugadores</button>
-	</form>
-</div>
-<div id="div-players" style="display:none;">
-	<table id="table-players">
-	  <thead>
-	    <tr>
-	      <th data-field="playerName" data-sortable="true">Jugador</th>
-	      <th data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
-	      <th data-field="playerPoints" data-sortable="true">Puntos</th>
-	      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
-	      <th data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
-	      <th data-field="upDownMarketValue" data-sortable="true" data-filter-control="select">Up/Down</th>
-	      <th data-field="diffMarketValueFormatted" data-sortable="true" data-sort-name="diffMarketValue">Diff</th>
-	      <th data-field="playerBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerBuyoutClause">Cláusula</th>
-	      <th data-field="playerEndBuyoutClauseFormatted" data-sortable="true" data-filter-control="input" data-sort-name="playerEndBuyoutClause">Fin Cláusula</th>
-	      <th data-field="playerPurchaseDateFormatted" data-sortable="true" data-sort-name="playerPurchaseDate">Fecha compra</th>
-	      <th data-field="playerMarketValuePurchaseDateFormatted" data-sortable="true" data-sort-name="playerMarketValuePurchaseDate">Valor F.Compra</th>
-	      <th data-field="diffMarketValuefromPurchaseDateFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseDate">Diff valor F.C.</th>
-	      <th data-field="upDownMarketValuefromPurchaseDate" data-sortable="true">Up/Down compra</th>
-	      <th data-field="playerPurchaseAmountFormatted" data-sortable="true" data-sort-name="playerPurchaseAmount">Importe Compra</th>
-	      <th data-field="diffMarketValuefromPurchaseAmountFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseAmount">Diff compra.</th>
-	      <th data-field="upDownMarketValuefromPurchaseAmount" data-sortable="true">Up/Down compra</th>
-	    </tr>
-	  </thead>
-	</table>
-</div>
+	<div style="margin-bottom: 2rem; margin-top: 2rem;">
+		<div class="container">
+			<div class="row">
+			    <div class="col">
+					<form id="form-token">
+					  <div class="form-group">
+					    <label for="token">Token</label>
+					    <input type="text" class="form-control" id="token" name="token" placeholder="Enter token" autocomplete="off">
+					  </div>
+					  <button type="submit" class="btn btn-info">Submit</button>
+						<button id="btn-copy" type="button" class="btn btn-light">Copiar</button>
+					</form>
+			    </div>
+		  	</div>
+			<div class="row">
+			    <div class="col">
+					<div id="div-leagues" style="display:none;">
+					</div>
+			    </div>
+		    </div>
+			<div class="row">
+			    <div class="col">
+					<div id="spinner1" class="spinner-border text-info" role="status" style="display:none;">
+						<span class="sr-only">Loading...</span>
+					</div>
+					<div id="div-ranking" style="display:none;">
+						<div class="row">
+						    <div class="col">
+								<table id="table-ranking">
+								  <thead>
+								    <tr>
+								      <th data-field="state" data-checkbox="true"></th>
+								      <th data-field="position" data-sortable="true">#</th>
+								      <th data-field="managerName" data-sortable="true">Manager</th>
+								      <th data-field="teamPoints" data-sortable="true">Puntos</th>
+								      <th data-field="teamValueFormatted" data-sortable="true" data-sort-name="teamValue">Valor</th>
+								      <th data-field="teamMoneyFormatted" data-sortable="true" data-sort-name="teamMoney">Dinero</th>
+								    </tr>
+								  </thead>
+								</table>
+						    </div>
+					    </div>
+						<div class="row">
+						    <div class="col">
+								<form id="form-ranking">
+								  <div class="form-group">
+								    <label for="exampleInputEmail1">Diferencia entre Valor de Mercado y Cláusula (en Millones)</label>
+							    	<input type="number" class="form-control" id="diffValueBuyoutClause" name="diffValueBuyoutClause" placeholder="Enter difference" autocomplete="off">
+								  </div>
+								  <div class="form-group">
+								    <label for="exampleInputEmail1">Días para fin de cláusula</label>
+							    	<input type="number" class="form-control" id="chkDaysBuyoutClause" name="daysBuyoutClause" placeholder="Enter days" autocomplete="off">
+								  </div>
+								  <div class="form-check">
+								    <input type="checkbox" class="form-check-input" id="chkUpdateDB" name="updatedb">
+								    <label class="form-check-label" for="chkUpdateDB">Update DB</label>
+								  </div>
+							      <input type="hidden" id="form-ranking-league" name="league">
+								  <button type="submit" class="btn btn-success">Mostrar Jugadores</button>
+								</form>
+						    </div>
+					    </div>
+					</div>
+					<div id="div-market" style="display:none;">
+						<table id="table-market">
+						  <thead>
+						    <tr>
+						      <th data-field="playerName" data-sortable="true">Jugador</th>
+						      <th data-field="playerPoints" data-sortable="true">Puntos</th>
+						      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
+						      <th data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
+						      <th data-field="diffMarketValueFormatted" data-sortable="true" data-sort-name="diffMarketValue">Diff</th>
+						    </tr>
+						  </thead>
+						</table>
+					</div>
+			    </div>
+		    </div>
+	    </div>
+	    <div style="margin-right: 2rem; margin-left: 2rem;">
+			<div id="spinner2" class="spinner-border text-success" role="status" style="display:none;">
+			  <span class="sr-only">Loading...</span>
+			</div>
+			<div id="div-players" style="display:none;">
+				<table id="table-players">
+				  <thead>
+				    <tr>
+				      <th data-field="playerName" data-sortable="true">Jugador</th>
+				      <th data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
+				      <th data-field="playerPoints" data-sortable="true">Puntos</th>
+				      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
+				      <th data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
+				      <th data-field="upDownMarketValue" data-sortable="true" data-filter-control="select">Up/Down</th>
+				      <th data-field="diffMarketValueFormatted" data-sortable="true" data-sort-name="diffMarketValue">Diff</th>
+				      <th data-field="playerBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerBuyoutClause">Cláusula</th>
+				      <th data-field="playerEndBuyoutClauseFormatted" data-sortable="true" data-filter-control="input" data-sort-name="playerEndBuyoutClause">Fin Cláusula</th>
+				      <th data-field="playerPurchaseDateFormatted" data-sortable="true" data-sort-name="playerPurchaseDate">Fecha compra</th>
+				      <th data-field="playerMarketValuePurchaseDateFormatted" data-sortable="true" data-sort-name="playerMarketValuePurchaseDate">Valor F.Compra</th>
+				      <th data-field="diffMarketValuefromPurchaseDateFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseDate">Diff valor F.C.</th>
+				      <th data-field="upDownMarketValuefromPurchaseDate" data-sortable="true">Up/Down compra</th>
+				      <th data-field="playerPurchaseAmountFormatted" data-sortable="true" data-sort-name="playerPurchaseAmount">Importe Compra</th>
+				      <th data-field="diffMarketValuefromPurchaseAmountFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseAmount">Diff compra.</th>
+				      <th data-field="upDownMarketValuefromPurchaseAmount" data-sortable="true">Up/Down compra</th>
+				    </tr>
+				  </thead>
+				</table>
+			</div>
+	    </div>
+	</div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
@@ -81,23 +131,32 @@
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.js"></script>
 <script>
   	$(document).ready(function(){
-  		var $form = $("#form-token");
+  		var $formtoken = $("#form-token");
   		var $formranking = $("#form-ranking");
   	  	var $tableranking = $("#table-ranking");
   	  	var $tableplayers = $("#table-players");
+  	  	var $tablemarket = $("#table-market");
   	  	var $divleagues = $("#div-leagues");
   	  	var $divranking = $("#div-ranking");
   	  	var $divplayers = $("#div-players");
+  	  	var $divmarket = $("#div-market");
+  	  	var $spinner1 = $("#spinner1");
+  	  	var $spinner2 = $("#spinner2");
   	  	
   	    $tableranking.bootstrapTable({
   	 	   sorting: true,
-  	 	   showColumns: true,
   	 	   clickToSelect:true,
-  	 	   showMultiSort: true,
-  	 	   showMultiSortButton: true,
+//   	 	   showColumns: true,
+//   	 	   showMultiSort: true,
+//   	 	   showMultiSortButton: true,
   	 	   sortName: "position",
   	 	   sortOrder: "asc"
   	 	   });
+  	    $tablemarket.bootstrapTable({
+   	 	   sorting: true,
+   	 	   sortName: "diffMarketValue",
+   	 	   sortOrder: "desc"
+   	 	   });
   	    $tableplayers.bootstrapTable({
   	 	   sorting: true,
   	 	   showColumns: true,
@@ -113,7 +172,11 @@
   		     document.execCommand('copy');
   	  	});
   	    function getRanking(token, id){
+  		  	$divmarket.hide();
   		  	$divranking.hide();
+  		  	$divplayers.hide();
+ 		  	$spinner2.hide();
+  		  	$spinner1.show();
   		    $.ajax({
   		           type: "GET",
   		           url: "/fantasyJson/ranking",
@@ -121,15 +184,50 @@
   		           success: function(data)
   		           {
   		               $tableranking.bootstrapTable("refreshOptions",{
-  		            	   data: data});
+  		            	   data: data,
+  		        	 	   sortName: 'position',
+  		        	 	   sortOrder: 'asc'});
+ 		    		  	$spinner1.hide();
   		             	$divranking.show();
+  		             	 $('html, body').animate({
+  		             		 scrollTop: $divranking.offset().top
+  		             		 }, 1000);
   		             	$("#form-ranking-league").val(id);
   		           }
   		         });
   	    }
-  	  	$form.submit(function( event ) {
+  	    function getMarket(token, id){
+  		  	$divmarket.hide();
+  		  	$divranking.hide();
+  		  	$divplayers.hide();
+ 		  	$spinner2.hide();
+  		  	$spinner1.show();
+  		    $.ajax({
+  		           type: "GET",
+  		           url: "/fantasyJson/market",
+  		           data: "token="+token+"&league="+id,
+  		           success: function(data)
+  		           {
+  		               $tablemarket.bootstrapTable("refreshOptions",{
+  		            	   data: data,
+  		         	 	   sortName: 'diffMarketValue',
+  		         	 	   sortOrder: 'desc'});
+ 		    		  	$spinner1.hide();
+  		             	$divmarket.show();
+  		             	 $('html, body').animate({
+  		             		 scrollTop: $divmarket.offset().top
+  		             		 }, 1000);
+  		           }
+  		         });
+  	    }
+  	  	$formtoken.submit(function( event ) {
   		  event.preventDefault();
-  		  	$divleagues.hide();
+		  	$divleagues.hide();
+  		  	$divmarket.hide();
+  		  	$divranking.hide();
+  		  	$divplayers.hide();
+ 		  	$spinner1.hide();
+ 		  	$spinner2.hide();
   		  	$divleagues.empty();
   		    $.ajax({
   		           type: "GET",
@@ -138,41 +236,68 @@
   		           dataType: 'json',
   		           success: function(data)
   		           {
-  		        	      $.each(data, function(index, item) {
-  		        	          if (this!='') {
-  		        	            var button = $('<button/>',
+							var button_group1 = $('<div class="btn-group" role="group">');
+  		        	      	$.each(data, function(index, item) {
+								if (this!='') {
+									var button_class = "btn-secondary";
+									if (index % 2 === 0) {
+										button_class = "btn-primary";
+									}
+									var button_group2 = $('<div class="btn-group" role="group">');
+									var button_dropdown = $('<button id="btnGroupDrop1" type="button" class="btn '+button_class+' dropdown-toggle" data-toggle="dropdown">'+item.leagueName+'</button>');
+									var button_menu = $('<ul class="dropdown-menu" role="menu">');
+									var li_market = $('<li>');
+  		        	            	var a_market = $('<a/>',
   		        	            	    {
-  		        	            			text: item.leagueName,
-  		        	            	        type: "button",
-  		        	            	        class:"btn btn-info",
+  		        	            			text: "Market",
+  		        	            	      	href: "#",
+  		        	            	      	class: "dropdown-item",
   		        	            	        click: function () { 
-  		        	            	        		getRanking($("#token").val(), item.leagueId);
+  		        	            	        		getMarket($("#token").val(), item.leagueId);
   		        	            	        	}
   		        	            	    });
-  		        	            $divleagues.append(button);
+									var li_ranking = $('<li>');
+  		        	            	var a_ranking = $('<a/>',
+  	  		        	            	    {
+  	  		        	            			text: "Ranking",
+  	  		        	            	      	href: "#",
+  	  		        	            	      	class: "dropdown-item",
+  	  		        	            	        click: function () { 
+  	  		        	            	        		getRanking($("#token").val(), item.leagueId);
+  	  		        	            	        	}
+  	  		        	            	    });
+  		        	            	li_market.append(a_market);
+  		        	            	li_ranking.append(a_ranking);
+  		        	            	button_menu.append(li_ranking);
+  		        	            	button_menu.append(li_market);
+  		        	            	button_group2.append(button_dropdown);
+  		        	            	button_group2.append(button_menu);
+  		        	            	button_group1.append(button_group2);
   		        	          }
   		        	        });
-  		             	$divleagues.show();
+        	            	$divleagues.append(button_group1);
+  		             		$divleagues.show();
   		           }
   		         });
   		});
   	  	$formranking.submit(function( event ) {
-   		  event.preventDefault();
+			event.preventDefault();
+  		  	$divplayers.hide();
+  		  	$spinner2.show();
   	  		var teams = [];
   	  		var json = JSON.parse(JSON.stringify($tableranking.bootstrapTable('getSelections')));
   	  		$.each(json, function(idx, obj) {
   	  			teams.push(obj.teamId);
   	  		});
   	  		var params = "&token=" + $("#token").val() + "&teams=" + teams.toString();
-  		  	$divplayers.hide();
   		    $.ajax({
   		           type: "GET",
   		           url: "/fantasyJson/players",
   		           data: $(this).serialize() + params, 
   		           success: function(data)
   		           {
-  		               $tableplayers.bootstrapTable("refreshOptions",{
-  		            	   data: data});
+						$tableplayers.bootstrapTable("refreshOptions",{data: data});
+  		   		  		$spinner2.hide();
   		             	$divplayers.show();
   		             	 $('html, body').animate({
   		             		 scrollTop: $divplayers.offset().top
