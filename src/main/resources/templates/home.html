@@ -17,7 +17,9 @@
   <button type="submit" class="btn btn-primary">Submit</button>
 	<button id="btn-copy" type="button" class="btn btn-secondary">Copiar token</button>
 </form>
-<div id="div-table-ranking" style="display:none;">
+<div id="div-leagues" style="display:none; margin-top:10px;">
+</div>
+<div id="div-ranking" style="display:none;">
 	<table id="table-ranking">
 	  <thead>
 	    <tr>
@@ -30,10 +32,24 @@
 	    </tr>
 	  </thead>
 	</table>
-    <input type="number" class="form-control" id=diffValueBuyoutClause name="diffValueBuyoutClause" placeholder="Enter difference">
-	<button id="btn-info" type="button" class="btn btn-success">Ver Jugadores</button>
+	<form id="form-ranking">
+	  <div class="form-group">
+	    <label for="exampleInputEmail1">Diferencia entre Valor de Mercado y Cláusula (en Millones)</label>
+    	<input type="number" class="form-control" id="diffValueBuyoutClause" name="diffValueBuyoutClause" placeholder="Enter difference">
+	  </div>
+	  <div class="form-group">
+	    <label for="exampleInputEmail1">Días para fin de cláusula</label>
+    	<input type="number" class="form-control" id="chkDaysBuyoutClause" name="daysBuyoutClause" placeholder="Enter days">
+	  </div>
+	  <div class="form-check">
+	    <input type="checkbox" class="form-check-input" id="chkUpdateDB" name="updatedb">
+	    <label class="form-check-label" for="chkUpdateDB">Update DB</label>
+	  </div>
+      <input type="hidden" id="form-ranking-league" name="league">
+	  <button type="submit" class="btn btn-success">Mostrar Jugadores</button>
+	</form>
 </div>
-<div id="div-table-players" style="display:none;">
+<div id="div-players" style="display:none;">
 	<table id="table-players">
 	  <thead>
 	    <tr>
@@ -46,6 +62,13 @@
 	      <th data-field="diffMarketValueFormatted" data-sortable="true" data-sort-name="diffMarketValue">Diff</th>
 	      <th data-field="playerBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerBuyoutClause">Cláusula</th>
 	      <th data-field="playerEndBuyoutClauseFormatted" data-sortable="true" data-filter-control="input" data-sort-name="playerEndBuyoutClause">Fin Cláusula</th>
+	      <th data-field="playerPurchaseDateFormatted" data-sortable="true" data-sort-name="playerPurchaseDate">Fecha compra</th>
+	      <th data-field="playerMarketValuePurchaseDateFormatted" data-sortable="true" data-sort-name="playerMarketValuePurchaseDate">Valor F.Compra</th>
+	      <th data-field="diffMarketValuefromPurchaseDateFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseDate">Diff valor F.C.</th>
+	      <th data-field="upDownMarketValuefromPurchaseDate" data-sortable="true">Up/Down compra</th>
+	      <th data-field="playerPurchaseAmountFormatted" data-sortable="true" data-sort-name="playerPurchaseAmount">Importe Compra</th>
+	      <th data-field="diffMarketValuefromPurchaseAmountFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseAmount">Diff compra.</th>
+	      <th data-field="upDownMarketValuefromPurchaseAmount" data-sortable="true">Up/Down compra</th>
 	    </tr>
 	  </thead>
 	</table>
@@ -57,73 +80,107 @@
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.js"></script>
 <script>
-	var $form = $("#form-token");
-  	var $table = $("#table-ranking");
-  	var $tableplayers = $("#table-players");
-  	var $divtable = $("#div-table-ranking");
-  	var $btninfo = $("#btn-info");
-  	var $divtableplayers = $("#div-table-players");
-    $table.bootstrapTable({
- 	   sorting: true,
- 	   showColumns: true,
- 	   clickToSelect:true,
- 	   showMultiSort: true,
- 	   showMultiSortButton: true,
- 	   sortName: "position",
- 	   sortOrder: "asc"
- 	   });
-    $tableplayers.bootstrapTable({
- 	   sorting: true,
- 	   showColumns: true,
- 	   showMultiSort: true,
- 	   showMultiSortButton: true,
- 	   pagination: true,
- 	   showExtendedPagination: true,
- 	   filterControl: true
- 	   });
-  	$form.submit(function( event ) {
-	  event.preventDefault();
-	  	$divtable.hide();
-	    $.ajax({
-	           type: "GET",
-	           url: "/fantasyJson/ranking",
-	           data: $(this).serialize(), // serializes the form's elements.
-	           success: function(data)
-	           {
-	               $table.bootstrapTable("refreshOptions",{
-	            	   data: data});
-	             	$divtable.show();
-	           }
-	         });
-	});
-  	$("#btn-copy").click(function( event ) {
-	  	$("#token").focus();
-	  	$("#token").select();
-	     document.execCommand('copy');
-  	});
-  	$btninfo.click(function( event ) {
-  		var teams = [];
-  		var json = JSON.parse(JSON.stringify($table.bootstrapTable('getSelections')));
-  		$.each(json, function(idx, obj) {
-  			teams.push(obj.teamId);
+  	$(document).ready(function(){
+  		var $form = $("#form-token");
+  		var $formranking = $("#form-ranking");
+  	  	var $tableranking = $("#table-ranking");
+  	  	var $tableplayers = $("#table-players");
+  	  	var $divleagues = $("#div-leagues");
+  	  	var $divranking = $("#div-ranking");
+  	  	var $divplayers = $("#div-players");
+  	  	
+  	    $tableranking.bootstrapTable({
+  	 	   sorting: true,
+  	 	   showColumns: true,
+  	 	   clickToSelect:true,
+  	 	   showMultiSort: true,
+  	 	   showMultiSortButton: true,
+  	 	   sortName: "position",
+  	 	   sortOrder: "asc"
+  	 	   });
+  	    $tableplayers.bootstrapTable({
+  	 	   sorting: true,
+  	 	   showColumns: true,
+  	 	   showMultiSort: true,
+  	 	   showMultiSortButton: true,
+  	 	   pagination: true,
+  	 	   showExtendedPagination: true,
+  	 	   filterControl: true
+  	 	   });
+  	  	$("#btn-copy").click(function( event ) {
+  		  	$("#token").focus();
+  		  	$("#token").select();
+  		     document.execCommand('copy');
+  	  	});
+  	    function getRanking(token, id){
+  		  	$divranking.hide();
+  		    $.ajax({
+  		           type: "GET",
+  		           url: "/fantasyJson/ranking",
+  		           data: "token="+token+"&league="+id,
+  		           success: function(data)
+  		           {
+  		               $tableranking.bootstrapTable("refreshOptions",{
+  		            	   data: data});
+  		             	$divranking.show();
+  		             	$("#form-ranking-league").val(id);
+  		           }
+  		         });
+  	    }
+  	  	$form.submit(function( event ) {
+  		  event.preventDefault();
+  		  	$divleagues.hide();
+  		  	$divleagues.empty();
+  		    $.ajax({
+  		           type: "GET",
+  		           url: "/fantasyJson/leagues",
+  		           data: $(this).serialize(), // serializes the form's elements.
+  		           dataType: 'json',
+  		           success: function(data)
+  		           {
+  		        	      $.each(data, function(index, item) {
+  		        	          if (this!='') {
+  		        	            var button = $('<button/>',
+  		        	            	    {
+  		        	            			text: item.leagueName,
+  		        	            	        type: "button",
+  		        	            	        class:"btn btn-info",
+  		        	            	        click: function () { 
+  		        	            	        		getRanking($("#token").val(), item.leagueId);
+  		        	            	        	}
+  		        	            	    });
+  		        	            $divleagues.append(button);
+  		        	          }
+  		        	        });
+  		             	$divleagues.show();
+  		           }
+  		         });
   		});
-  		var params = "token=" + $("#token").val() + "&teams=" + teams.toString() + "&diffValueBuyoutClause=" + $("#diffValueBuyoutClause").val();
-	  	$divtableplayers.hide();
-	    $.ajax({
-	           type: "GET",
-	           url: "/fantasyJson/players",
-	           data: params, 
-	           success: function(data)
-	           {
-	               $tableplayers.bootstrapTable("refreshOptions",{
-	            	   data: data});
-	             	$divtableplayers.show();
-	             	 $('html, body').animate({
-	             		 scrollTop: $divtableplayers.offset().top
-	             		 }, 1000);
-	           }
-	         });
-  	});
+  	  	$formranking.submit(function( event ) {
+   		  event.preventDefault();
+  	  		var teams = [];
+  	  		var json = JSON.parse(JSON.stringify($tableranking.bootstrapTable('getSelections')));
+  	  		$.each(json, function(idx, obj) {
+  	  			teams.push(obj.teamId);
+  	  		});
+  	  		var params = "&token=" + $("#token").val() + "&teams=" + teams.toString();
+  		  	$divplayers.hide();
+  		    $.ajax({
+  		           type: "GET",
+  		           url: "/fantasyJson/players",
+  		           data: $(this).serialize() + params, 
+  		           success: function(data)
+  		           {
+  		               $tableplayers.bootstrapTable("refreshOptions",{
+  		            	   data: data});
+  		             	$divplayers.show();
+  		             	 $('html, body').animate({
+  		             		 scrollTop: $divplayers.offset().top
+  		             		 }, 1000);
+  		           }
+  		         });
+  	  	});
+  	})
 </script>
 </body>
 </html>
