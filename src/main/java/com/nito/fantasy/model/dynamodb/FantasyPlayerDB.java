@@ -180,6 +180,7 @@ public class FantasyPlayerDB {
 		newPlayer.setPlayerBuyoutClauseFormatted(Formatter.formatNumber(this.playerBuyoutClause));
 		newPlayer.setPlayerEndBuyoutClause(this.playerEndBuyoutClause);
 		newPlayer.setPlayerEndBuyoutClauseFormatted(Formatter.formatDate(this.playerEndBuyoutClause));
+		newPlayer.setUpDownBuyoutClause();
 		newPlayer.setUpDownYesterday(this.playerMarketValueYesterday);
 		newPlayer.setUpDownPurchaseDate(this.playerPurchaseDate, this.playerPurchaseAmount, this.playerMarketValuePurchaseDate);
     	return newPlayer;

@@ -15,13 +15,20 @@ public class Player {
 	private Integer playerPointsAA;
 	private Integer playerValue;
 	private String playerValueFormatted;
+	
 	private Integer playerBuyoutClause;
 	private String playerBuyoutClauseFormatted;
 	private LocalDateTime playerEndBuyoutClause;
 	private String playerEndBuyoutClauseFormatted;
-	private Integer diffMarketValue;
-	private String diffMarketValueFormatted;
-	private String upDownMarketValue;
+	private Integer diffMarketValuefromBuyoutClause;
+	private String diffMarketValuefromBuyoutClauseFormatted;
+	private String upDownMarketValuefromBuyoutClause;
+	
+	private Integer playerMarketValueYesterday;
+	private String playerMarketValueYesterdayFormatted;
+	private Integer diffMarketValuefromYesterday;
+	private String diffMarketValuefromYesterdayFormatted;
+	private String upDownMarketValuefromYesterday;
 	
 	private LocalDateTime playerPurchaseDate;
 	private String playerPurchaseDateFormatted;
@@ -40,17 +47,47 @@ public class Player {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Integer getDiffMarketValue() {
-		return diffMarketValue;
+	public Integer getDiffMarketValuefromBuyoutClause() {
+		return diffMarketValuefromBuyoutClause;
 	}
-	public void setDiffMarketValue(Integer diffMarketValue) {
-		this.diffMarketValue = diffMarketValue;
+	public void setDiffMarketValuefromBuyoutClause(Integer diffMarketValuefromBuyoutClause) {
+		this.diffMarketValuefromBuyoutClause = diffMarketValuefromBuyoutClause;
 	}
-	public String getDiffMarketValueFormatted() {
-		return diffMarketValueFormatted;
+	public String getDiffMarketValuefromBuyoutClauseFormatted() {
+		return diffMarketValuefromBuyoutClauseFormatted;
 	}
-	public void setDiffMarketValueFormatted(String diffMarketValueFormatted) {
-		this.diffMarketValueFormatted = diffMarketValueFormatted;
+	public void setDiffMarketValuefromBuyoutClauseFormatted(String diffMarketValuefromBuyoutClauseFormatted) {
+		this.diffMarketValuefromBuyoutClauseFormatted = diffMarketValuefromBuyoutClauseFormatted;
+	}
+	public Integer getPlayerMarketValueYesterday() {
+		return playerMarketValueYesterday;
+	}
+	public void setPlayerMarketValueYesterday(Integer playerMarketValueYesterday) {
+		this.playerMarketValueYesterday = playerMarketValueYesterday;
+	}
+	public String getPlayerMarketValueYesterdayFormatted() {
+		return playerMarketValueYesterdayFormatted;
+	}
+	public void setPlayerMarketValueYesterdayFormatted(String playerMarketValueYesterdayFormatted) {
+		this.playerMarketValueYesterdayFormatted = playerMarketValueYesterdayFormatted;
+	}
+	public Integer getDiffMarketValuefromYesterday() {
+		return diffMarketValuefromYesterday;
+	}
+	public void setDiffMarketValuefromYesterday(Integer diffMarketValuefromYesterday) {
+		this.diffMarketValuefromYesterday = diffMarketValuefromYesterday;
+	}
+	public String getDiffMarketValuefromYesterdayFormatted() {
+		return diffMarketValuefromYesterdayFormatted;
+	}
+	public void setDiffMarketValuefromYesterdayFormatted(String diffMarketValuefromYesterdayFormatted) {
+		this.diffMarketValuefromYesterdayFormatted = diffMarketValuefromYesterdayFormatted;
+	}
+	public String getUpDownMarketValuefromYesterday() {
+		return upDownMarketValuefromYesterday;
+	}
+	public void setUpDownMarketValuefromYesterday(String upDownMarketValuefromYesterday) {
+		this.upDownMarketValuefromYesterday = upDownMarketValuefromYesterday;
 	}
 	public LocalDateTime getPlayerEndBuyoutClause() {
 		return playerEndBuyoutClause;
@@ -117,12 +154,6 @@ public class Player {
 	}
 	public void setPlayerPointsAA(Integer playerPointsAA) {
 		this.playerPointsAA = playerPointsAA;
-	}
-	public String getUpDownMarketValue() {
-		return upDownMarketValue;
-	}
-	public void setUpDownMarketValue(String upDownMarketValue) {
-		this.upDownMarketValue = upDownMarketValue;
 	}
 	public LocalDateTime getPlayerPurchaseDate() {
 		return playerPurchaseDate;
@@ -196,17 +227,32 @@ public class Player {
 	public void setUpDownMarketValuefromPurchaseDate(String upDownMarketValuefromPurchaseDate) {
 		this.upDownMarketValuefromPurchaseDate = upDownMarketValuefromPurchaseDate;
 	}
+	public void setUpDownBuyoutClause() {
+
+		Integer diffValor = this.playerValue - this.playerBuyoutClause;
+		setDiffMarketValuefromBuyoutClause(diffValor);
+		setDiffMarketValuefromBuyoutClauseFormatted(Formatter.formatNumber(diffValor));
+		if(diffValor > 0) {
+    		setUpDownMarketValuefromBuyoutClause("UP");
+		}else if(diffValor < 0) {
+    		setUpDownMarketValuefromBuyoutClause("DOWN");
+		}else {
+    		setUpDownMarketValuefromBuyoutClause("=");
+		}
+	}
 	public void setUpDownYesterday(Integer valueAyer) {
 
 		Integer diffValor = this.playerValue - valueAyer;
-		setDiffMarketValue(diffValor);
-		setDiffMarketValueFormatted(Formatter.formatNumber(diffValor));
+		setPlayerMarketValueYesterday(valueAyer);
+		setPlayerMarketValueYesterdayFormatted(Formatter.formatNumber(valueAyer));
+		setDiffMarketValuefromYesterday(diffValor);
+		setDiffMarketValuefromYesterdayFormatted(Formatter.formatNumber(diffValor));
 		if(diffValor > 0) {
-    		setUpDownMarketValue("UP");
+    		setUpDownMarketValuefromYesterday("UP");
 		}else if(diffValor < 0) {
-    		setUpDownMarketValue("DOWN");
+    		setUpDownMarketValuefromYesterday("DOWN");
 		}else {
-    		setUpDownMarketValue("=");
+    		setUpDownMarketValuefromYesterday("=");
 		}
 	}
 	public void setUpDownPurchaseDate(LocalDateTime purchaseDate, Integer purchaseAmount, Integer marketValue) {
@@ -255,6 +301,12 @@ public class Player {
 	}
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
+	}
+	public String getUpDownMarketValuefromBuyoutClause() {
+		return upDownMarketValuefromBuyoutClause;
+	}
+	public void setUpDownMarketValuefromBuyoutClause(String upDownMarketValuefromBuyoutClause) {
+		this.upDownMarketValuefromBuyoutClause = upDownMarketValuefromBuyoutClause;
 	}
 	
 }

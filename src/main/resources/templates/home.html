@@ -85,7 +85,7 @@
 						      <th data-field="playerPoints" data-sortable="true">Puntos</th>
 						      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
 						      <th data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
-						      <th data-field="diffMarketValueFormatted" data-sortable="true" data-sort-name="diffMarketValue">Diff</th>
+						      <th data-field="diffMarketValuefromYesterdayFormatted" data-sortable="true" data-sort-name="diffMarketValuefromYesterday">Diff</th>
 						    </tr>
 						  </thead>
 						</table>
@@ -98,28 +98,50 @@
 			  <span class="sr-only">Loading...</span>
 			</div>
 			<div id="div-players" style="display:none;">
-				<table id="table-players">
-				  <thead>
-				    <tr>
-				      <th data-field="playerName" data-sortable="true">Jugador</th>
-				      <th data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
-				      <th data-field="playerPoints" data-sortable="true">Puntos</th>
-				      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
-				      <th data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
-				      <th data-field="upDownMarketValue" data-sortable="true" data-filter-control="select">Up/Down</th>
-				      <th data-field="diffMarketValueFormatted" data-sortable="true" data-sort-name="diffMarketValue">Diff</th>
-				      <th data-field="playerBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerBuyoutClause">Cláusula</th>
-				      <th data-field="playerEndBuyoutClauseFormatted" data-sortable="true" data-filter-control="input" data-sort-name="playerEndBuyoutClause">Fin Cláusula</th>
-				      <th data-field="playerPurchaseDateFormatted" data-sortable="true" data-sort-name="playerPurchaseDate">Fecha compra</th>
-				      <th data-field="playerMarketValuePurchaseDateFormatted" data-sortable="true" data-sort-name="playerMarketValuePurchaseDate">Valor F.Compra</th>
-				      <th data-field="diffMarketValuefromPurchaseDateFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseDate">Diff valor F.C.</th>
-				      <th data-field="upDownMarketValuefromPurchaseDate" data-sortable="true">Up/Down compra</th>
-				      <th data-field="playerPurchaseAmountFormatted" data-sortable="true" data-sort-name="playerPurchaseAmount">Importe Compra</th>
-				      <th data-field="diffMarketValuefromPurchaseAmountFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseAmount">Diff compra.</th>
-				      <th data-field="upDownMarketValuefromPurchaseAmount" data-sortable="true">Up/Down compra</th>
-				    </tr>
-				  </thead>
-				</table>
+				<div class="row">
+				    <div class="col">
+						<table id="table-players">
+						  <thead>
+						    <tr>
+						      <th rowspan="2" data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
+		<!-- Campos Jugador -->
+						      <th rowspan="2" data-field="playerName" data-sortable="true">Jugador</th>
+						      <th rowspan="2" data-field="playerPoints" data-sortable="true">Puntos</th>
+						      <th rowspan="2" data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
+						      <th rowspan="2" data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
+						      <th colspan="3">Cláusula</th>
+						      <th colspan="2">vs Mercado Ayer</th>
+						      <th rowspan="2" data-field="playerPurchaseDateFormatted" data-sortable="true" data-sort-name="playerPurchaseDate">Fecha Compra</th>
+						      <th colspan="2">vs Mercado F. compra</th>
+						      <th colspan="2">vs Importe Compra</th>
+						    </tr>
+						    <tr>
+		<!-- Campos Cláusula -->
+						      <th data-field="playerBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerBuyoutClause">Total</th>
+						      <th data-field="diffMarketValuefromBuyoutClauseFormatted" data-sortable="true" data-sort-name="diffMarketValuefromBuyoutClause">Dif.</th>
+						      <th data-field="playerEndBuyoutClauseFormatted" data-sortable="true" data-filter-control="input" data-sort-name="playerEndBuyoutClause">Fecha Fin</th>
+		<!-- Campos vs Valor ayer -->
+						      <th data-field="playerMarketValueYesterdayFormatted" data-sortable="true" data-sort-name="playerMarketValueYesterday">Valor</th>
+						      <th data-field="diffMarketValuefromYesterdayFormatted" data-sortable="true" data-sort-name="diffMarketValuefromYesterday">Dif.</th>
+<!-- 						      <th data-field="upDownMarketValuefromYesterday" data-sortable="true" data-filter-control="select">Up/Down</th> -->
+		<!-- Campos vs Valor compra -->
+						      <th data-field="playerMarketValuePurchaseDateFormatted" data-sortable="true" data-sort-name="playerMarketValuePurchaseDate">Valor</th>
+						      <th data-field="diffMarketValuefromPurchaseDateFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseDate">Dif.</th>
+<!-- 						      <th data-field="upDownMarketValuefromPurchaseDate" data-sortable="true">Up/Down</th> -->
+		<!-- Campos vs Importe compra -->
+						      <th data-field="playerPurchaseAmountFormatted" data-sortable="true" data-sort-name="playerPurchaseAmount">Importe</th>
+						      <th data-field="diffMarketValuefromPurchaseAmountFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseAmount">Dif.</th>
+<!-- 						      <th data-field="upDownMarketValuefromPurchaseAmount" data-sortable="true">Up/Down</th> -->
+						    </tr>
+						  </thead>
+						</table>
+				    </div>
+			    </div>
+<!-- 				<div class="row"> -->
+<!-- 				    <div class="col"> -->
+<!-- 						<button id="btn-hide-columns" type="button" class="btn warning">Ocultar columnas</button> -->
+<!-- 				    </div> -->
+<!-- 			    </div> -->
 			</div>
 	    </div>
 	</div>
@@ -163,14 +185,19 @@
   	 	   showMultiSort: true,
   	 	   showMultiSortButton: true,
   	 	   pagination: true,
-  	 	   showExtendedPagination: true,
-  	 	   filterControl: true
+  	 	   showExtendedPagination: true
+//   	 	   filterControl: true
   	 	   });
   	  	$("#btn-copy").click(function( event ) {
   		  	$("#token").focus();
   		  	$("#token").select();
   		     document.execCommand('copy');
   	  	});
+//   	  	$("#btn-hide-columns").click(function( event ) {
+// 		    $tableplayers.bootstrapTable('hideColumn', 'upDownMarketValuefromYesterday');
+// 		    $tableplayers.bootstrapTable('hideColumn', 'upDownMarketValuefromPurchaseDate');
+// 		    $tableplayers.bootstrapTable('hideColumn', 'upDownMarketValuefromPurchaseAmount');
+//   	  	});
   	    function getRanking(token, id){
   		  	$divmarket.hide();
   		  	$divranking.hide();
