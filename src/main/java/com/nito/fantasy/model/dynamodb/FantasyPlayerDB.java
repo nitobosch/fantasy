@@ -22,6 +22,10 @@ public class FantasyPlayerDB {
 	private String leagueId;
 	private String playerId;
 	private String playerName;
+	private String playerImage;
+	private String playerTeam;
+	private String playerTeamImage;
+	private Integer playerPositionId;
 	private String managerName;
 	private String teamId;
 	private Integer playerPoints;
@@ -165,8 +169,44 @@ public class FantasyPlayerDB {
 	public void setPlayerMarketValueYesterday(Integer playerMarketValueYesterday) {
 		this.playerMarketValueYesterday = playerMarketValueYesterday;
 	}
-    
-    public Player convertToDto(){
+
+    @DynamoDBAttribute
+    public String getPlayerImage() {
+		return playerImage;
+	}
+
+	public void setPlayerImage(String playerImage) {
+		this.playerImage = playerImage;
+	}
+
+    @DynamoDBAttribute
+	public String getPlayerTeam() {
+		return playerTeam;
+	}
+
+	public void setPlayerTeam(String playerTeam) {
+		this.playerTeam = playerTeam;
+	}
+
+    @DynamoDBAttribute
+	public String getPlayerTeamImage() {
+		return playerTeamImage;
+	}
+
+	public void setPlayerTeamImage(String playerTeamImage) {
+		this.playerTeamImage = playerTeamImage;
+	}
+
+    @DynamoDBAttribute
+	public Integer getPlayerPositionId() {
+		return playerPositionId;
+	}
+
+	public void setPlayerPositionId(Integer playerPositionId) {
+		this.playerPositionId = playerPositionId;
+	}
+
+	public Player convertToDto(){
 		Player newPlayer = new Player();
 		newPlayer.setPlayerId(this.playerId);
 		newPlayer.setPlayerName(this.playerName);
@@ -183,6 +223,10 @@ public class FantasyPlayerDB {
 		newPlayer.setUpDownBuyoutClause();
 		newPlayer.setUpDownYesterday(this.playerMarketValueYesterday);
 		newPlayer.setUpDownPurchaseDate(this.playerPurchaseDate, this.playerPurchaseAmount, this.playerMarketValuePurchaseDate);
+		newPlayer.setPlayerImage(this.playerImage);
+		newPlayer.setPlayerTeamName(this.playerTeam);
+		newPlayer.setPlayerTeamImage(this.playerTeamImage);
+		newPlayer.setPlayerPosition(this.playerPositionId);
     	return newPlayer;
     }
 

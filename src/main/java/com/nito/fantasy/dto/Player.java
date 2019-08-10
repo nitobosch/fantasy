@@ -15,6 +15,12 @@ public class Player {
 	private Integer playerPointsAA;
 	private Integer playerValue;
 	private String playerValueFormatted;
+	private Integer playerNumBids;
+	private String playerImage;
+	private String playerTeamName;
+	private String playerTeamImage;
+	private String playerPositionName;
+	private Integer playerPositionId;
 	
 	private Integer playerBuyoutClause;
 	private String playerBuyoutClauseFormatted;
@@ -307,6 +313,43 @@ public class Player {
 	}
 	public void setUpDownMarketValuefromBuyoutClause(String upDownMarketValuefromBuyoutClause) {
 		this.upDownMarketValuefromBuyoutClause = upDownMarketValuefromBuyoutClause;
+	}
+	public Integer getPlayerNumBids() {
+		return playerNumBids;
+	}
+	public void setPlayerNumBids(Integer playerNumBids) {
+		this.playerNumBids = playerNumBids;
+	}
+	public String getPlayerImage() {
+		return playerImage;
+	}
+	public void setPlayerImage(String playerImage) {
+		this.playerImage = playerImage;
+	}
+	public String getPlayerTeamName() {
+		return playerTeamName;
+	}
+	public void setPlayerTeamName(String playerTeamName) {
+		this.playerTeamName = playerTeamName;
+	}
+	public String getPlayerTeamImage() {
+		return playerTeamImage;
+	}
+	public void setPlayerTeamImage(String playerTeamImage) {
+		this.playerTeamImage = playerTeamImage;
+	}
+	public Integer getPlayerPositionId() {
+		return playerPositionId;
+	}
+	public void setPlayerPosition(Integer playerPositionId) {
+		this.playerPositionId = playerPositionId;
+		this.playerPositionName = PlayerPosition.getPlayerPosition(playerPositionId).getValue();
+	}
+	public String getPlayerPositionName() {
+		return playerPositionName;
+	}
+	public void setPlayerPositionName(String playerPositionName) {
+		this.playerPositionName = playerPositionName;
 	}
 	
 }

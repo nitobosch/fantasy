@@ -22,6 +22,7 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.nito.fantasy.dto.Player;
+import com.nito.fantasy.dto.PlayerPosition;
 import com.nito.fantasy.model.dynamodb.FantasyNewDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerHistoryDB;
@@ -165,6 +166,11 @@ public class FantasyService {
         		newPlayer.setPlayerPointsAA(player.getPlayerMaster().getLastSeasonPoints());
         		newPlayer.setPlayerValue(player.getPlayerMaster().getMarketValue());
         		newPlayer.setPlayerValueFormatted(Formatter.formatNumber(player.getPlayerMaster().getMarketValue()));
+        		newPlayer.setPlayerNumBids(player.getNumberOfBids());
+        		newPlayer.setPlayerImage(player.getPlayerMaster().getImages().getTransparent().get64x64());
+        		newPlayer.setPlayerTeamName(player.getPlayerMaster().getTeam().getName());
+        		newPlayer.setPlayerTeamImage(player.getPlayerMaster().getTeam().getBadgeColor());
+        		newPlayer.setPlayerPosition(player.getPlayerMaster().getPositionId());
         		
         		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(player.getPlayerMaster().getId());
         		newPlayer.setUpDownYesterday(playerMarket.get(playerMarket.size()-2).getMarketValue());
@@ -295,6 +301,10 @@ public class FantasyService {
         		newPlayer.setPlayerMarketValue(player.getPlayerMaster().getMarketValue());
         		newPlayer.setPlayerBuyoutClause(player.getBuyoutClause());
         		newPlayer.setPlayerEndBuyoutClause(player.getBuyoutClauseLockedEndTime());
+        		newPlayer.setPlayerImage(player.getPlayerMaster().getImages().getTransparent().get64x64());
+        		newPlayer.setPlayerTeam(player.getPlayerMaster().getTeam().getName());
+        		newPlayer.setPlayerTeamImage(player.getPlayerMaster().getTeam().getBadgeColor());
+        		newPlayer.setPlayerPositionId(player.getPlayerMaster().getPositionId());
 
         		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(player.getPlayerMaster().getId());
         		

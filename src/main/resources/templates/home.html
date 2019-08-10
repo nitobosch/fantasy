@@ -11,6 +11,35 @@
 		.row+.row {
 		    margin-top: 1rem;
 		}
+		.team{
+		}
+		.name{
+		}
+		.position{
+		    text-transform: uppercase;
+		    font-size: 10px;
+		    font-family: cs_regular;
+		    line-height: 10px;
+		    padding: 4px 5px;
+		    border-radius: 2px;
+		    margin: 0px 0 0px 3px;
+		    display: inline-block;
+		    width: auto;
+		    vertical-align: middle;
+		    color: white;
+		}
+		.position.player-1{
+		    background: -webkit-linear-gradient(328deg,#ff7e00 0,#d85912 100%);
+		}
+		.position.player-2{
+    		background: -webkit-linear-gradient(328deg,#ce32dc 0,#8023a7 100%);
+   		}
+		.position.player-3{
+		    background: -webkit-linear-gradient(328deg,#4bafe3 0,#0094ff 100%);
+		}
+   		.position.player-4{
+		    background: -webkit-linear-gradient(328deg,#f3c832 0,#ee9015 100%);
+		}
 	</style>
 </head>
 <body>
@@ -85,11 +114,13 @@
 						<table id="table-market">
 						  <thead>
 						    <tr>
-						      <th data-field="playerName" data-sortable="true">Jugador</th>
+						      <th data-field="playerName" data-formatter="playerFormatter" data-sortable="true">Jugador</th>
+						      <th data-field="playerPositionId" data-formatter="positionFormatter" data-sortable="true">Posición</th>
 						      <th data-field="playerPoints" data-sortable="true">Puntos</th>
 						      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
 						      <th data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
 						      <th data-field="diffMarketValuefromYesterdayFormatted" data-sortable="true" data-sort-name="diffMarketValuefromYesterday">Diff</th>
+						      <th data-field="playerNumBids" data-sortable="true">Pujas</th>
 						    </tr>
 						  </thead>
 						</table>
@@ -109,7 +140,8 @@
 						    <tr>
 						      <th rowspan="2" data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
 		<!-- Campos Jugador -->
-						      <th rowspan="2" data-field="playerName" data-sortable="true">Jugador</th>
+						      <th rowspan="2" data-formatter="playerFormatter" data-field="playerName" data-sortable="true">Jugador</th>
+						      <th rowspan="2" data-field="playerPositionId" data-formatter="positionFormatter" data-sortable="true">Posición</th>
 						      <th rowspan="2" data-field="playerPoints" data-sortable="true">Puntos</th>
 						      <th rowspan="2" data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
 						      <th rowspan="2" data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
@@ -156,6 +188,12 @@
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.js"></script>
 <script>
+  	function playerFormatter(value, row) {
+    	return '<div class="row"><div class="col-1"><span class="team"><img height="20px" src="'+row.playerTeamImage+'" /></span></div><div class="col"><span class="name"> '+ value + '</span></div></div>';
+  	}
+  	function positionFormatter(value, row) {
+  		return '<div class="row"><div class="col text-center"><span class="position player-'+ row.playerPositionId + '"> '+ row.playerPositionName + '</span></div></div>';
+	}
   	$(document).ready(function(){
   		var $formtoken = $("#form-token");
   		var $formranking = $("#form-ranking");
