@@ -76,7 +76,7 @@ public class FantasyController {
     public List<FantasyNewDB> udpatenewsdb(
     		@RequestParam(name="token", required=true) String token, 
     		@RequestParam(name="league", required=true) String league) {
-        return fantasyService.updateNewsfromDB(token, league);
+        return fantasyService.updateAllNewsfromDB(token, league);
     }
     
     @RequestMapping(value = "/fantasyJson/market", method = RequestMethod.GET, produces = "application/json")
@@ -103,9 +103,7 @@ public class FantasyController {
     		@RequestParam(name="token", required=true) String token, 
     		@RequestParam(name="league", required=true) String league) {
         List<FantasyRanking> fantasyRanking = fantasyService.getRankingFantasy(token,league);
-        return fantasyRanking.stream()
-        		.map(n -> n.convertToDto())
-        		.collect(Collectors.toList());
+        return fantasyService.convertToDtoRanking(league, fantasyRanking);
     }
     
     @RequestMapping(value = "/fantasyJson/rankingupdate", method = RequestMethod.GET, produces = "application/json")

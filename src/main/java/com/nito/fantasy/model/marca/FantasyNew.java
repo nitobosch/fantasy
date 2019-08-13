@@ -168,6 +168,12 @@ public class FantasyNew {
     	return name;
     }
     
+    public String getManagerName() {
+    	String name = null;
+		name = this.msg.substring(0,this.msg.indexOf(" ha "));
+    	return name;
+    }
+    
     public Integer getMoney() {
     	String s_money = null;
     	s_money = this.msg.substring(this.msg.indexOf(" por ")+5, this.msg.indexOf(" €"));
@@ -195,6 +201,7 @@ public class FantasyNew {
 		fantasyNew.setPartnerName(this.getPartnerName());
 		fantasyNew.setMoney(this.getMoney());
 		fantasyNew.setOperation(this.getOperation());
+		fantasyNew.setManagerName(this.getManagerName());
 		return fantasyNew;
 	}
 

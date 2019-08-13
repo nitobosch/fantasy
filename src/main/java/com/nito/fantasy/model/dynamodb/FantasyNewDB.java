@@ -14,6 +14,7 @@ public class FantasyNewDB {
 	private String id;
 	private String leagueId;
 	private String playerId;
+	private String managerName;
 	private String playerName;
 	private String partnerName;
 	private LocalDateTime date;
@@ -115,5 +116,14 @@ public class FantasyNewDB {
 
 	public void setOperation(String operation) {
 		this.operation = operation;
+	}
+
+    @DynamoDBAttribute
+	public String getManagerName() {
+		return managerName;
+	}
+
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
 	}
 }

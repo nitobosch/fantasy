@@ -10,6 +10,8 @@ public class Ranking {
 	private String teamValueFormatted;
 	private Integer teamMoney;
 	private String teamMoneyFormatted;
+	private Integer teamMoneyAprox;
+	private String teamMoneyAproxFormatted;
 	public Ranking() {
 		super();
 	}
@@ -66,6 +68,18 @@ public class Ranking {
 	}
 	public void setState(boolean state) {
 		this.state = state;
+	}
+	public Integer getTeamMoneyAprox() {
+		return teamMoneyAprox;
+	}
+	public void setTeamMoneyAprox(Integer teamMoneyAprox) {
+		this.teamMoneyAprox = teamMoneyAprox;
+	}
+	public String getTeamMoneyAproxFormatted() {
+		return teamMoneyAproxFormatted;
+	}
+	public void setTeamMoneyAproxFormatted(String teamMoneyAproxFormatted) {
+		this.teamMoneyAproxFormatted = teamMoneyAproxFormatted;
 	}
 	
 

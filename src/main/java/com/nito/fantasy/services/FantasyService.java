@@ -23,6 +23,7 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.nito.fantasy.dto.Player;
 import com.nito.fantasy.dto.PlayerPosition;
+import com.nito.fantasy.dto.Ranking;
 import com.nito.fantasy.model.dynamodb.FantasyNewDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerHistoryDB;
@@ -138,14 +139,14 @@ public class FantasyService {
         return fantasyHistory;
     }
 	
-    public List<FantasyNew> getNewsFantasy(String authToken, String league) {
+    public List<FantasyNew> getNewsFantasy(String authToken, String league, int newId) {
     	
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));        
         headers.add("Authorization", "Bearer "+authToken );
         
         RestTemplate restTemplate = new RestTemplate();
-        String url = "https://api.laligafantasymarca.com/api/v3/leagues/"+league+"/news/1";
+        String url = "https://api.laligafantasymarca.com/api/v3/leagues/"+league+"/news/"+newId;
     	logger.info("url:"+url);
         ResponseEntity<List<FantasyNew>> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(headers), new ParameterizedTypeReference<List<FantasyNew>>(){});
         List<FantasyNew> fantasyNews = response.getBody();
@@ -181,6 +182,32 @@ public class FantasyService {
     		}
         } 
     	return players;
+    }
+    
+    public List<Ranking> convertToDtoRanking(String league, List<FantasyRanking> fantasyRanking){
+    	List<Ranking> ranking = new ArrayList<>();
+    	int initialBudget = 100000000;
+    	for (FantasyRanking obj: fantasyRanking) 
+        { 
+    		Ranking newRanking = obj.convertToDto();
+    		List<FantasyNewDB> fantasyNewsDB = getFantasyNewsFromDB(league);
+    		Integer totalPurchases = fantasyNewsDB.stream()
+    				.filter(p -> obj.getTeam().getManager().getManagerName().equals(p.getManagerName()))
+  				  	.filter(p -> "purchase".equals(p.getOperation()))
+  				  	.mapToInt(p -> p.getMoney())
+  				  	.sum();
+    		Integer totalSales = fantasyNewsDB.stream()
+    				.filter(p -> obj.getTeam().getManager().getManagerName().equals(p.getManagerName()))
+    				.filter(p -> "sale".equals(p.getOperation()))
+    				.mapToInt(p -> p.getMoney())
+    				.sum();
+    		Integer totalBalance = initialBudget + totalSales - totalPurchases;
+    		logger.info("ranking: " + newRanking.getPosition() + " - " + newRanking.getManagerName() + "(" + totalSales + "-" + totalPurchases + "->" + totalBalance + ")");
+    		newRanking.setTeamMoneyAprox(totalBalance);
+    		newRanking.setTeamMoneyAproxFormatted(Formatter.formatNumber(totalBalance));
+    		ranking.add(newRanking);
+        } 
+    	return ranking;
     }
     
     public List<Player> convertToDtoPlayers(String authToken, List<FantasyTeam> fantasyTeams){
@@ -359,12 +386,54 @@ public class FantasyService {
     	return fantasyPlayerDBRepository.findByLeagueId(leagueId); 
     }
 	
+    public List<FantasyNewDB> updateAllNewsfromDB(String authToken, String leagueId) {
+
+    	List<FantasyNewDB> newsDB = getFantasyNewsFromDB(leagueId);
+    	List<FantasyNew> fantasyNewsAll = new ArrayList<>();
+
+    	int i = 0;
+    	List<FantasyNew> fantasyNews = null;
+    	
+    	do
+    	{
+    		i = i + 1;
+    		fantasyNews = null;
+    		try {
+        		fantasyNews = getNewsFantasy(authToken, leagueId, i);
+        		fantasyNewsAll.addAll(fantasyNews);
+    		}catch(Exception e) {
+            	logger.info("no more news:"+i);
+    			break;
+    		}
+    	}
+    	while (fantasyNews != null && fantasyNews.size()>0);
+    	
+    	for (FantasyNew obj: fantasyNewsAll){ 
+        	logger.info("Title:"+obj.getMsg());
+    		FantasyNewDB objDB = null;
+    		if ("Operación de mercado".equals(obj.getTitle())) {
+        		if (newsDB != null) {
+        			objDB = newsDB.stream()
+          				  .filter(p -> obj.getId().equals(p.getId()))
+          				  .findAny()
+          				  .orElse(null);	
+        		}    		
+        		if (objDB == null) {
+        			objDB = obj.convertToEntityDB(leagueId);
+        			fantasyNewDBRepository.save(objDB);
+        		}
+    		}
+    	}
+    	
+    	return (List<FantasyNewDB>) fantasyNewDBRepository.findByLeagueId(leagueId); 
+    }
+	
     public List<FantasyNewDB> updateNewsfromDB(String authToken, String leagueId) {
 
     	List<FantasyNewDB> newsDB = getFantasyNewsFromDB(leagueId);
-
-    	List<FantasyNew> fantasyNews = getNewsFantasy(authToken, leagueId);
-
+    	
+    	List<FantasyNew> fantasyNews = getNewsFantasy(authToken, leagueId, 1);
+    	
     	for (FantasyNew obj: fantasyNews){ 
         	logger.info("Title:"+obj.getMsg());
     		FantasyNewDB objDB = null;
