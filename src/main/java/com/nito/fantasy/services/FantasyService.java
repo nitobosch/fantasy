@@ -173,7 +173,9 @@ public class FantasyService {
         		newPlayer.setPlayerPosition(player.getPlayerMaster().getPositionId());
         		
         		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(player.getPlayerMaster().getId());
-        		newPlayer.setUpDownYesterday(playerMarket.get(playerMarket.size()-2).getMarketValue());
+        		if (playerMarket != null && playerMarket.size() > 1) {
+            		newPlayer.setUpDownYesterday(playerMarket.get(playerMarket.size()-2).getMarketValue());
+        		}
         		
         		players.add(newPlayer);	
     		}
