@@ -68,6 +68,9 @@
 					<div id="spinner1" class="spinner-border text-info" role="status" style="display:none;">
 						<span class="sr-only">Loading...</span>
 					</div>
+					<div id="error1" class="alert alert-danger" style="display:none;">
+					  <strong>Error!</strong> <span id="error1-txt"></span>
+					</div>
 					<div id="div-ranking" style="display:none;">
 						<div class="row">
 						    <div class="col">
@@ -131,6 +134,9 @@
 	    <div style="margin-right: 2rem; margin-left: 2rem;">
 			<div id="spinner2" class="spinner-border text-success" role="status" style="display:none;">
 			  <span class="sr-only">Loading...</span>
+			</div>
+			<div id="error2" class="alert alert-danger" style="display:none;">
+			  <strong>Error!</strong> <span id="error2-txt"></span>
 			</div>
 			<div id="div-players" style="display:none;">
 				<div class="row">
@@ -206,6 +212,10 @@
   	  	var $divmarket = $("#div-market");
   	  	var $spinner1 = $("#spinner1");
   	  	var $spinner2 = $("#spinner2");
+  	  	var $error1 = $("#error1");
+  	  	var $error2 = $("#error2");
+  	  	var $error1text = $("#error1-txt");
+  	  	var $error2text = $("#error2-txt");
   	  	
   	    $tableranking.bootstrapTable({
   	 	   sorting: true,
@@ -231,6 +241,8 @@
 //   	 	   filterControl: true
   	 	   });
   	    function getLeagues(){
+ 		  	$error1.hide();
+ 		  	$error2.hide();
 		  	$divleagues.hide();
   		  	$divmarket.hide();
   		  	$divranking.hide();
@@ -286,10 +298,16 @@
   		        	        });
         	            	$divleagues.append(button_group1);
   		             		$divleagues.show();
-  		           }
+  		        	},
+  		         error: function(jqXHR, textStatus, errorThrown){
+  		        	$error1text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
+  		        	$error1.show();
+  		        	}	
   		         });
   	    }
   	    function getRanking(id){
+ 		  	$error1.hide();
+ 		  	$error2.hide();
   		  	$divmarket.hide();
   		  	$divranking.hide();
   		  	$divplayers.hide();
@@ -311,10 +329,16 @@
   		             		 scrollTop: $divranking.offset().top
   		             		 }, 1000);
   		             	$("#form-ranking-league").val(id);
-  		           }
+  		           	},
+  	  		         error: function(jqXHR, textStatus, errorThrown){
+  	  		        	$error1text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
+  	  		        	$error1.show();
+  	  		        	}	
   		         });
   	    }
   	    function getMarket(id){
+ 		  	$error1.hide();
+ 		  	$error2.hide();
   		  	$divmarket.hide();
   		  	$divranking.hide();
   		  	$divplayers.hide();
@@ -335,10 +359,16 @@
   		             	 $('html, body').animate({
   		             		 scrollTop: $divmarket.offset().top
   		             		 }, 1000);
-  		           }
+  		           	},
+  	  		         error: function(jqXHR, textStatus, errorThrown){
+  	  		        	$error1text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
+  	  		        	$error1.show();
+  	  		        	}	
   		         });
   	    }
   	    function getPlayers(updatedb){
+ 		  	$error1.hide();
+ 		  	$error2.hide();
   		  	$divplayers.hide();
   		  	$spinner2.show();
           	 $('html, body').animate({
@@ -362,7 +392,14 @@
   		             	 $('html, body').animate({
   		             		 scrollTop: $divplayers.offset().top
   		             		 }, 1000);
-  		           }
+  		           	},
+  	  		         error: function(jqXHR, textStatus, errorThrown){
+  	  		        	$error2text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
+  	  		        	$error2.show();
+  		             	 $('html, body').animate({
+  		             		 scrollTop: $error2.offset().top
+  		             		 }, 1000);
+  	  		        	}	
   		         });
   	    }
   	  	$formtoken.submit(function( event ) {
