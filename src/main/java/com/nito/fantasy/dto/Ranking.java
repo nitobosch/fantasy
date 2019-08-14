@@ -12,6 +12,8 @@ public class Ranking {
 	private String teamMoneyFormatted;
 	private Integer teamMoneyAprox;
 	private String teamMoneyAproxFormatted;
+	private Integer teamMoneyAvailable;
+	private String teamMoneyAvailableFormatted;
 	public Ranking() {
 		super();
 	}
@@ -80,6 +82,22 @@ public class Ranking {
 	}
 	public void setTeamMoneyAproxFormatted(String teamMoneyAproxFormatted) {
 		this.teamMoneyAproxFormatted = teamMoneyAproxFormatted;
+	}
+	public Integer getTeamMoneyAvailable() {
+		return teamMoneyAvailable;
+	}
+	public void setTeamMoneyAvailable(Integer teamMoneyAvailable) {
+		this.teamMoneyAvailable = teamMoneyAvailable;
+	}
+	public String getTeamMoneyAvailableFormatted() {
+		return teamMoneyAvailableFormatted;
+	}
+	public void setTeamMoneyAvailableFormatted(String teamMoneyAvailableFormatted) {
+		this.teamMoneyAvailableFormatted = teamMoneyAvailableFormatted;
+	}
+	public void setTeamMoneyAvailable() {
+		this.teamMoneyAvailable = (int)Math.round(((this.teamValue * new Double(0.2)) + this.teamMoneyAprox));
+		
 	}
 	
 

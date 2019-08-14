@@ -205,6 +205,9 @@ public class FantasyService {
     		logger.info("ranking: " + newRanking.getPosition() + " - " + newRanking.getManagerName() + "(" + totalSales + "-" + totalPurchases + "->" + totalBalance + ")");
     		newRanking.setTeamMoneyAprox(totalBalance);
     		newRanking.setTeamMoneyAproxFormatted(Formatter.formatNumber(totalBalance));
+    		Integer totalAvailable = (int)Math.round(((newRanking.getTeamValue() * new Double(0.2)) + totalBalance));
+    		newRanking.setTeamMoneyAvailable(totalAvailable);
+    		newRanking.setTeamMoneyAvailableFormatted(Formatter.formatNumber(totalAvailable));
     		ranking.add(newRanking);
         } 
     	return ranking;
