@@ -147,8 +147,8 @@
 						    <tr>
 						      <th rowspan="2" data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
 		<!-- Campos Jugador -->
-						      <th rowspan="2" data-formatter="playerFormatter" data-field="playerName" data-sortable="true">Jugador</th>
-						      <th rowspan="2" data-field="playerPositionId" data-formatter="positionFormatter" data-sortable="true">Posición</th>
+						      <th rowspan="2" data-formatter="playerFormatter" data-field="playerName" data-sortable="true" data-filter-control="input">Jugador</th>
+						      <th rowspan="2" data-field="playerPositionName" data-formatter="positionFormatter" data-sortable="true" data-sort-name="playerPositionId" data-filter-control="select">Posición</th>
 						      <th rowspan="2" data-field="playerPoints" data-sortable="true">Puntos</th>
 						      <th rowspan="2" data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
 						      <th rowspan="2" data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
@@ -238,8 +238,8 @@
   	 	   showMultiSort: true,
   	 	   showMultiSortButton: true,
   	 	   pagination: true,
-  	 	   showExtendedPagination: true
-//   	 	   filterControl: true
+  	 	   showExtendedPagination: true,
+  	 	   filterControl: true
   	 	   });
   	    function getLeagues(){
  		  	$error1.hide();
@@ -383,7 +383,7 @@
   	  		var params = "&token=" + $("#token").val() + "&teams=" + teams.toString() + "&updatedb=" + updatedb;
   		    $.ajax({
   		           type: "GET",
-  		           url: "/fantasyJson/players",
+  		           url: "/fantasyJson/leagueplayers",
   		           data: $formranking.serialize() + params, 
   		           success: function(data)
   		           {

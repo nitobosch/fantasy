@@ -6,7 +6,7 @@ import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 
 import com.nito.fantasy.model.dynamodb.FantasyNewDB;
-import com.nito.fantasy.model.dynamodb.FantasyPlayerDB;
+import com.nito.fantasy.model.dynamodb.FantasyLeaguePlayerDB;
 
 @EnableScan
 public interface FantasyNewDBRepository extends CrudRepository<FantasyNewDB, String> {

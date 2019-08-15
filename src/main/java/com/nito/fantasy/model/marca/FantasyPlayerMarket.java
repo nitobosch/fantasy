@@ -2,6 +2,7 @@
 package com.nito.fantasy.model.marca;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -11,6 +12,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.nito.fantasy.model.dynamodb.FantasyPlayerDB;
+import com.nito.fantasy.model.dynamodb.FantasyPlayerMarketDB;
+import com.nito.fantasy.util.Formatter;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -69,5 +73,15 @@ public class FantasyPlayerMarket {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
+	
+	public FantasyPlayerMarketDB convertToEntityDB(String playerId) {
+		FantasyPlayerMarketDB fantasyPlayerMarket = new FantasyPlayerMarketDB();
+		fantasyPlayerMarket.setId(playerId+"-"+Formatter.formatDateToId(this.date.toLocalDate()));
+		fantasyPlayerMarket.setPlayerId(playerId);
+		fantasyPlayerMarket.setDate(this.date.toLocalDate());
+		fantasyPlayerMarket.setMarketValue(this.marketValue);
+		
+		return fantasyPlayerMarket;
+	}
 
 }

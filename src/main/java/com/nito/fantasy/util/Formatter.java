@@ -2,6 +2,7 @@ package com.nito.fantasy.util;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -51,6 +52,19 @@ public class Formatter {
     
     public static String formatDate(LocalDateTime date) {    	
     	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    	String aux = null;
+    	try {
+        	if(date != null && !"".equals(date)) {
+            	aux = formatter.format(date);
+        	}
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+        return aux;
+    }
+    
+    public static String formatDateToId(LocalDate date) {    	
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
     	String aux = null;
     	try {
         	if(date != null && !"".equals(date)) {

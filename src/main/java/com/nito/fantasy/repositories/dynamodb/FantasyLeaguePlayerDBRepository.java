@@ -6,8 +6,8 @@ import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 
 import com.nito.fantasy.model.dynamodb.FantasyLeaguePlayerDB;
-import com.nito.fantasy.model.dynamodb.FantasyPlayerDB;
 
 @EnableScan
-public interface FantasyPlayerDBRepository extends CrudRepository<FantasyPlayerDB, String> {
+public interface FantasyLeaguePlayerDBRepository extends CrudRepository<FantasyLeaguePlayerDB, String> {
+    List<FantasyLeaguePlayerDB> findByLeagueId(String leagueId);
 }

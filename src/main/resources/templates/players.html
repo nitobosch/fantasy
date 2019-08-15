@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.css">
+	<style type="text/css">
+		.row+.row {
+		    margin-top: 1rem;
+		}
+		.team{
+		}
+		.name{
+		}
+		.position{
+		    text-transform: uppercase;
+		    font-size: 10px;
+		    font-family: cs_regular;
+		    line-height: 10px;
+		    padding: 4px 5px;
+		    border-radius: 2px;
+		    margin: 0px 0 0px 3px;
+		    display: inline-block;
+		    width: auto;
+		    vertical-align: middle;
+		    color: white;
+		}
+		.position.player-1{
+		    background: -webkit-linear-gradient(328deg,#ff7e00 0,#d85912 100%);
+		}
+		.position.player-2{
+    		background: -webkit-linear-gradient(328deg,#ce32dc 0,#8023a7 100%);
+   		}
+		.position.player-3{
+		    background: -webkit-linear-gradient(328deg,#4bafe3 0,#0094ff 100%);
+		}
+   		.position.player-4{
+		    background: -webkit-linear-gradient(328deg,#f3c832 0,#ee9015 100%);
+		}
+	</style>
+</head>
+<body>
+	<div style="margin-bottom: 5rem; margin-top: 5rem;">
+	    <div style="margin-right: 2rem; margin-left: 2rem;">
+			<div id="spinner" class="spinner-border text-success" role="status" style="display:none;">
+			  <span class="sr-only">Loading...</span>
+			</div>
+			<div id="error" class="alert alert-danger" style="display:none;">
+			  <strong>Error!</strong> <span id="error-txt"></span>
+			</div>
+			<button id="btn-1" type="button" class="btn btn-light">Refresh</button>
+			<button id="btn-2" type="button" class="btn btn-light">Update</button>
+			<div id="div-players">
+				<div class="row">
+				    <div class="col">
+						<table id="table-players">
+						  <thead>
+						    <tr>
+		<!-- Campos Jugador -->
+						      <th rowspan="2" data-formatter="playerFormatter" data-field="playerName" data-sortable="true" data-filter-control="input">Jugador</th>
+						      <th rowspan="2" data-field="playerPositionName" data-formatter="positionFormatter" data-sortable="true" data-sort-name="playerPositionId" data-filter-control="select">Posición</th>
+						      <th rowspan="2" data-field="playerPoints" data-sortable="true">Puntos</th>
+						      <th rowspan="2" data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
+						      <th rowspan="2" data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
+						      <th colspan="2">vs Mercado Ayer</th>
+						    </tr>
+						    <tr>
+		<!-- Campos vs Valor ayer -->
+						      <th data-field="playerMarketValueYesterdayFormatted" data-sortable="true" data-sort-name="playerMarketValueYesterday">Valor</th>
+						      <th data-field="diffMarketValuefromYesterdayFormatted" data-sortable="true" data-sort-name="diffMarketValuefromYesterday">Dif.</th>
+<!-- 						      <th data-field="upDownMarketValuefromYesterday" data-sortable="true" data-filter-control="select">Up/Down</th> -->
+						    </tr>
+						  </thead>
+						</table>
+				    </div>
+			    </div>
+			</div>
+	    </div>
+	</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.js"></script>
+<script>
+  	function playerFormatter(value, row) {
+    	return '<div class="row"><div class="col-1"><span class="team"><img height="20px" src="'+row.playerTeamImage+'" /></span></div><div class="col"><span class="name"> '+ value + '</span></div></div>';
+  	}
+  	function positionFormatter(value, row) {
+  		return '<div class="row"><div class="col text-center"><span class="position player-'+ row.playerPositionId + '"> '+ row.playerPositionName + '</span></div></div>';
+	}
+  	$(document).ready(function(){
+  	  	var $tableplayers = $("#table-players");
+  	  	var $divplayers = $("#div-players");
+  	  	var $spinner = $("#spinner");
+  	  	var $error = $("#error");
+  	  	var $errortext = $("#error-txt");
+  	  	
+  	    $tableplayers.bootstrapTable({
+  	 	   sorting: true,
+  	 	   showColumns: true,
+  	 	   showMultiSort: true,
+  	 	   showMultiSortButton: true,
+  	 	   pagination: true,
+  	 	   showExtendedPagination: true,
+   	 	   url: "/fantasyJson/players",
+  	 	   filterControl: true
+  	 	   });
+  	    function getPlayers(updatedb){
+ 		  	$error.hide();
+  		  	$divplayers.hide();
+  		  	$spinner.show();
+  	  		var params = "updatedb=" + updatedb;
+  		    $.ajax({
+  		           type: "GET",
+  		           url: "/fantasyJson/players",
+  		           data: params,
+  		           success: function(data)
+  		           {
+						$tableplayers.bootstrapTable("refreshOptions",{data: data});
+  		   		  		$spinner.hide();
+  		             	$divplayers.show();
+  		             	 $('html, body').animate({
+  		             		 scrollTop: $divplayers.offset().top
+  		             		 }, 1000);
+  		           	},
+  	  		         error: function(jqXHR, textStatus, errorThrown){
+  	  		        	$errortext.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
+  		   		  		$spinner.hide();
+  	  		        	$error.show();
+  		             	 $('html, body').animate({
+  		             		 scrollTop: $error.offset().top
+  		             		 }, 1000);
+  	  		        	}	
+  		         });
+  	    }
+  	  	$("#btn-1").click(function( event ) {
+			getPlayers("off");
+  	  	});
+  	  	$("#btn-2").click(function( event ) {
+			getPlayers("on");
+  	  	});
+  	})
+</script>
+</body>
+</html>
