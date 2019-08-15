@@ -27,6 +27,7 @@ public class FantasyPlayerDB {
 	private Integer playerPoints;
 	private Integer playerPointsAA;
 	private Integer playerMarketValue;
+	private Integer playerMarketValueYesterday;
 
     public FantasyPlayerDB() {
     }
@@ -116,6 +117,7 @@ public class FantasyPlayerDB {
 	public Player convertToDto(){
 		Player newPlayer = new Player();
 		newPlayer.setPlayerId(this.id);
+		newPlayer.setManagerName("-");
 		newPlayer.setPlayerName(this.playerName);
 		newPlayer.setPlayerPoints(this.playerPoints);
 		newPlayer.setPlayerPointsAA(this.playerPointsAA);
@@ -125,6 +127,16 @@ public class FantasyPlayerDB {
 		newPlayer.setPlayerTeamName(this.playerTeamName);
 		newPlayer.setPlayerTeamImage(this.playerTeamImage);
 		newPlayer.setPlayerPosition(this.playerPositionId);
+		newPlayer.setUpDownYesterday(this.playerMarketValueYesterday);
     	return newPlayer;
     }
+
+	public Integer getPlayerMarketValueYesterday() {
+		return playerMarketValueYesterday;
+	}
+
+    @DynamoDBAttribute
+	public void setPlayerMarketValueYesterday(Integer playerMarketValueYesterday) {
+		this.playerMarketValueYesterday = playerMarketValueYesterday;
+	}
 }

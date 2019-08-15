@@ -210,7 +210,7 @@ public class FantasyLeaguePlayerDB {
 		Player newPlayer = new Player();
 		newPlayer.setPlayerId(this.playerId);
 		newPlayer.setPlayerName(this.playerName);
-		newPlayer.setManagerName(this.managerName);
+		newPlayer.setManagerName(Formatter.parseNull(this.managerName));
 		newPlayer.setTeamId(this.teamId);
 		newPlayer.setPlayerPoints(this.playerPoints);
 		newPlayer.setPlayerPointsAA(this.playerPointsAA);

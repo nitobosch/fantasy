@@ -48,11 +48,20 @@
 			<div class="row">
 			    <div class="col">
 					<form id="form-token">
-					  <div class="form-group">
-					    <label for="token">Token</label>
-					    <input type="text" class="form-control" id="token" name="token" placeholder="Enter token" autocomplete="off">
-					  </div>
-					  <button type="submit" class="btn btn-info">Submit</button>
+					  	<div class="form-group">
+					    	<label for="token">Token</label>
+					    	<input type="text" class="form-control" id="token" name="token" placeholder="Enter token" autocomplete="off">
+					  	</div>
+<!-- 					  	<button type="submit" class="btn btn-info">Show Leagues</button> -->
+						<div class="btn-group dropright">
+							<button type="submit" class="btn btn-info">Show Leagues</button>
+						  	<button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+						    	<span class="sr-only"></span>
+						  	</button>
+						  	<ul class="dropdown-menu" role="menu">
+					    		<li><a id="btn-leaguesupdatedb" class="dropdown-item" href="#">Update</a></li>
+						  	</ul>
+						</div>
 						<button id="btn-copy" type="button" class="btn btn-light">Copiar</button>
 					</form>
 			    </div>
@@ -102,12 +111,13 @@
 									</div>
 									<input type="hidden" id="form-ranking-league" name="league">
 									<div class="btn-group dropright">
-										<button type="submit" class="btn btn-success">Mostrar Jugadores</button>
+										<button type="submit" class="btn btn-success">Show Players</button>
 									  	<button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
 									    	<span class="sr-only"></span>
 									  	</button>
 									  	<ul class="dropdown-menu" role="menu">
-									    	<li><a id="btn-updatedb" class="dropdown-item" href="#">Update</a></li>
+<!-- 									    	<li><a id="btn-updatedb" class="dropdown-item" href="#">Update</a></li> -->
+									    	<li><a id="btn-allplayers" class="dropdown-item" href="#">All players</a></li>
 									  	</ul>
 									</div>
 								</form>
@@ -162,7 +172,7 @@
 		<!-- Campos Cláusula -->
 						      <th data-field="playerBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerBuyoutClause">Total</th>
 						      <th data-field="diffMarketValuefromBuyoutClauseFormatted" data-sortable="true" data-sort-name="diffMarketValuefromBuyoutClause">Dif.</th>
-						      <th data-field="playerEndBuyoutClauseFormatted" data-sortable="true" data-filter-control="input" data-sort-name="playerEndBuyoutClause">Fecha Fin</th>
+						      <th data-field="playerEndBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerEndBuyoutClause">Fecha Fin</th>
 		<!-- Campos vs Valor ayer -->
 						      <th data-field="playerMarketValueYesterdayFormatted" data-sortable="true" data-sort-name="playerMarketValueYesterday">Valor</th>
 						      <th data-field="diffMarketValuefromYesterdayFormatted" data-sortable="true" data-sort-name="diffMarketValuefromYesterday">Dif.</th>
@@ -241,20 +251,20 @@
   	 	   showExtendedPagination: true,
   	 	   filterControl: true
   	 	   });
-  	    function getLeagues(){
+  	    function getLeagues(updatedb){
  		  	$error1.hide();
  		  	$error2.hide();
 		  	$divleagues.hide();
   		  	$divmarket.hide();
   		  	$divranking.hide();
   		  	$divplayers.hide();
- 		  	$spinner1.hide();
+ 		  	$spinner1.show();
  		  	$spinner2.hide();
   		  	$divleagues.empty();
   		    $.ajax({
   		           type: "GET",
   		           url: "/fantasyJson/leagues",
-  		           data: $formtoken.serialize(), // serializes the form's elements.
+  		           data: $formtoken.serialize() + "&updatedb=" + updatedb, // serializes the form's elements.
   		           dataType: 'json',
   		           success: function(data)
   		           {
@@ -298,10 +308,12 @@
   		        	          }
   		        	        });
         	            	$divleagues.append(button_group1);
+        	     		  	$spinner1.hide();
   		             		$divleagues.show();
   		        	},
   		         error: function(jqXHR, textStatus, errorThrown){
   		        	$error1text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
+  		 		  	$spinner1.hide();
   		        	$error1.show();
   		        	}	
   		         });
@@ -333,6 +345,7 @@
   		           	},
   	  		         error: function(jqXHR, textStatus, errorThrown){
   	  		        	$error1text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
+  	  	  		  		$spinner1.hide();
   	  		        	$error1.show();
   	  		        	}	
   		         });
@@ -363,11 +376,12 @@
   		           	},
   	  		         error: function(jqXHR, textStatus, errorThrown){
   	  		        	$error1text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
+  	  	  		  		$spinner1.hide();
   	  		        	$error1.show();
   	  		        	}	
   		         });
   	    }
-  	    function getPlayers(updatedb){
+  	    function getPlayers(updatedb, allplayers){
  		  	$error1.hide();
  		  	$error2.hide();
   		  	$divplayers.hide();
@@ -380,7 +394,7 @@
   	  		$.each(json, function(idx, obj) {
   	  			teams.push(obj.teamId);
   	  		});
-  	  		var params = "&token=" + $("#token").val() + "&teams=" + teams.toString() + "&updatedb=" + updatedb;
+  	  		var params = "&token=" + $("#token").val() + "&teams=" + teams.toString() + "&updatedb=" + updatedb + "&allplayers=" + allplayers;
   		    $.ajax({
   		           type: "GET",
   		           url: "/fantasyJson/leagueplayers",
@@ -396,6 +410,7 @@
   		           	},
   	  		         error: function(jqXHR, textStatus, errorThrown){
   	  		        	$error2text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
+  	  	  		  		$spinner2.hide();
   	  		        	$error2.show();
   		             	 $('html, body').animate({
   		             		 scrollTop: $error2.offset().top
@@ -418,6 +433,15 @@
   	  	});
   	  	$("#btn-updatedb").click(function( event ) {
 			getPlayers("on");
+  	  	});
+  	  	$("#btn-allplayers").click(function( event ) {
+			getPlayers("off","on");
+  	  	});
+  	  	$("#btn-allplayersupd").click(function( event ) {
+			getPlayers("on","on");
+  	  	});
+  	  	$("#btn-leaguesupdatedb").click(function( event ) {
+    		  getLeagues("on");
   	  	});
   	})
 </script>

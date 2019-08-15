@@ -75,4 +75,16 @@ public class Formatter {
     	}
         return aux;
     }
+    
+    public static String parseNull(String s) {    	
+    	String aux = s;
+    	try {
+        	if(s == null || "".equals(s)) {
+            	aux = "-";
+        	}
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
+        return aux;
+    }
 }

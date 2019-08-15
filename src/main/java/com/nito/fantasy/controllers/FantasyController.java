@@ -30,6 +30,7 @@ import com.nito.fantasy.model.dynamodb.FantasyPlayerHistoryDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerMarketDB;
 import com.nito.fantasy.model.marca.FantasyLeague;
 import com.nito.fantasy.model.marca.FantasyMarket;
+import com.nito.fantasy.model.marca.FantasyPlayer;
 import com.nito.fantasy.model.marca.FantasyRanking;
 import com.nito.fantasy.model.marca.FantasyTeam;
 import com.nito.fantasy.repositories.dynamodb.FantasyPlayerHistoryDBRepository;
@@ -99,9 +100,14 @@ public class FantasyController {
     
     @RequestMapping(value = "/fantasyJson/leagues", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List<League> fantasyLeagues(@RequestParam(name="token", required=true) String token) {
-        List<FantasyLeague> fantasyRanking = fantasyService.getLeaguesFantasy(token);
-        return fantasyRanking.stream()
+    public List<League> fantasyLeagues(
+    		@RequestParam(name="token", required=true) String token,
+    		@RequestParam(name="updatedb", required=false) String updatedb) {
+        List<FantasyLeague> fantasyLeagues = fantasyService.getLeaguesFantasy(token);
+        if ("on".equals(updatedb)) {
+        	fantasyService.updatePlayersFromDB();
+        }
+        return fantasyLeagues.stream()
         		.map(n -> n.convertToDto())
         		.collect(Collectors.toList());
     }
@@ -112,7 +118,10 @@ public class FantasyController {
     		@RequestParam(name="token", required=true) String token, 
     		@RequestParam(name="league", required=true) String league) {
         List<FantasyRanking> fantasyRanking = fantasyService.getRankingFantasy(token,league);
+    	logger.info("updateNewsFromDB:"+league);
     	fantasyService.updateNewsFromDB(token, league);
+    	logger.info("updateFantasyLeaguePlayersFromDB:"+league);
+    	fantasyService.updateFantasyLeaguePlayersFromDB(token, league);
         return fantasyService.convertToDtoRanking(league, fantasyRanking);
     }
     
@@ -132,28 +141,69 @@ public class FantasyController {
     public List<Player> fantasyLeaguePlayers(
     		@RequestParam(name="token", required=false) String token, 
     		@RequestParam(name="teams", required=false) String teams, 
-    		@RequestParam(name="diffValueBuyoutClause", required=false) Integer diffValueBuyoutClause, 
-    		@RequestParam(name="daysBuyoutClause", required=false) Integer daysBuyoutClause, 
+    		@RequestParam(name="diffValueBuyoutClause", required=false) String diffValueBuyoutClause, 
+    		@RequestParam(name="daysBuyoutClause", required=false) String daysBuyoutClause, 
     		@RequestParam(name="league", required=true) String league,
-    		@RequestParam(name="updatedb", required=false) String updatedb) {
+    		@RequestParam(name="updatedb", required=false) String updatedb,
+    		@RequestParam(name="allplayers", required=false) String allplayers) {
     	logger.info("LocalDateTime.now().plusDays(1):"+LocalDateTime.now().plusDays(1));
     	logger.info("teams:"+teams);
     	logger.info("diffValueBuyoutClause:"+diffValueBuyoutClause);
     	logger.info("daysBuyoutClause:"+daysBuyoutClause);
     	logger.info("league:"+league);
     	logger.info("updatedb:"+updatedb);
-    	if("on".equals(updatedb)) {
-        	fantasyService.updateFantasyLeaguePlayers(token, league);
-    	}
+    	logger.info("allplayers:"+allplayers);
     	List<String> teamsList = new ArrayList<>(Arrays.asList(teams.split(",")));
     	logger.info("teamsList.size():"+teamsList.size());
-        return fantasyService.getFantasyLeaguePlayersFromDB(league)
+    	List<Player> leaguePlayers = new ArrayList<>();
+    	List<String> leaguePlayersId = new ArrayList<>();
+    	List<Player> allPlayers = new ArrayList<>();
+    	List<Player> players = new ArrayList<>();
+    	if("on".equals(updatedb)) {
+        	fantasyService.updatePlayersFromDB();
+        	fantasyService.updateFantasyLeaguePlayersFromDB(token, league);
+    	}
+    	leaguePlayers = fantasyService.getFantasyLeaguePlayersFromDB(league)
+  			  .stream()
+  			  .map(n -> n.convertToDto())
+  			  .collect(Collectors.toList());
+    	logger.info("leaguePlayers.size():"+leaguePlayers.size());
+		leaguePlayersId = leaguePlayers
+				  .stream()
+	  			  .map(n -> n.getPlayerId())
+				  .collect(Collectors.toList());
+    	logger.info("leaguePlayersId.size():"+leaguePlayersId.size());
+    	if("on".equals(allplayers)) {
+//    		allPlayers = fantasyService.getFantasyPlayers();
+    		allPlayers = fantasyService.getFantasyPlayersFromDB()
+        			  .stream()
+        			  .map(n -> n.convertToDto())
+        			  .collect(Collectors.toList());
+        	logger.info("allPlayers.size():"+allPlayers.size());
+    	}
+    	players.addAll(leaguePlayers);
+    	logger.info("1-players.size():"+players.size());
+    	for (Player objPlayer: allPlayers){ 
+        	logger.info("objPlayer:"+objPlayer.getPlayerId()+" - "+objPlayer.getPlayerName());
+    		if (!leaguePlayersId.contains(objPlayer.getPlayerId())) {
+            	logger.info("objPlayer add");
+    			players.add(objPlayer);
+    		}
+    	}
+    	logger.info("2-players.size():"+players.size());
+        return players
 			  .stream()
-			  .map(n -> n.convertToDto())
-			  .filter(n -> diffValueBuyoutClause == null || (n.getPlayerBuyoutClause() - n.getPlayerValue() < (diffValueBuyoutClause*1000000)))
-			  .filter(n -> "".equals(teams) || teams == null || teamsList == null || teamsList.size() == 0 || teamsList.contains(n.getTeamId()))
-			  .filter(n -> daysBuyoutClause == null || n.getPlayerEndBuyoutClause().isBefore(LocalDateTime.now().plusDays(daysBuyoutClause)))
+			  .filter(n -> "".equals(diffValueBuyoutClause) || diffValueBuyoutClause == null || (n.getPlayerBuyoutClause() - n.getPlayerValue() < (Integer.valueOf(diffValueBuyoutClause)*1000000)))
+			  .filter(n -> "on".equals(allplayers) || "".equals(teams) || teams == null || teamsList == null || teamsList.size() == 0 || teamsList.contains(n.getTeamId()))
+			  .filter(n -> "".equals(daysBuyoutClause) || daysBuyoutClause == null || n.getPlayerEndBuyoutClause().isBefore(LocalDateTime.now().plusDays(Integer.valueOf(daysBuyoutClause))))
 			  .collect(Collectors.toList());
+//        return fantasyService.getFantasyLeaguePlayersFromDB(league)
+//			  .stream()
+//			  .map(n -> n.convertToDto())
+//			  .filter(n -> diffValueBuyoutClause == null || (n.getPlayerBuyoutClause() - n.getPlayerValue() < (diffValueBuyoutClause*1000000)))
+//			  .filter(n -> "".equals(teams) || teams == null || teamsList == null || teamsList.size() == 0 || teamsList.contains(n.getTeamId()))
+//			  .filter(n -> daysBuyoutClause == null || n.getPlayerEndBuyoutClause().isBefore(LocalDateTime.now().plusDays(daysBuyoutClause)))
+//			  .collect(Collectors.toList());
     }
     
     @RequestMapping(value = "/fantasyJson/players", method = RequestMethod.GET, produces = "application/json")

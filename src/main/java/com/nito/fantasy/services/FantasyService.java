@@ -245,12 +245,15 @@ public class FantasyService {
     	List<Player> players = new ArrayList<Player>();
     	List<FantasyPlayerDB> playersDB = getFantasyPlayersFromDB();
 //    	List<FantasyPlayerMarketDB> playersMarketDB = getFantasyPlayersMarketFromDB();
+    	int i = 0;
     	for (FantasyPlayerDB playerDB: playersDB) 
         { 
     		Player newPlayer = playerDB.convertToDto();
 //    		List<FantasyPlayerMarketDB> playerMarketDB = playersMarketDB.stream()
 //    				.filter(p -> p.getPlayerId().equals(playerDB.getId()))
 //    				.collect(Collectors.toList());
+    		i++;
+    		logger.info(i+":"+playerDB.getPlayerName()+" ("+playerDB.getId()+")");
     		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(playerDB.getId());
     		if (playerMarket != null && playerMarket.size() > 1) {
         		newPlayer.setUpDownYesterday(playerMarket.get(playerMarket.size()-2).getMarketValue());
@@ -289,7 +292,7 @@ public class FantasyService {
     	return (List<FantasyPlayerHistoryDB>) fantasyPlayerHistoryDBRepository.findByLeagueId(leagueId); 
     }
 
-    public void updateFantasyLeaguePlayers(String authToken, String leagueId) {
+    public void updateFantasyLeaguePlayersFromDB(String authToken, String leagueId) {
 
     	clearFantasyLeaguePlayersFromDB(leagueId);
     	List<FantasyLeaguePlayerDB> new_playersDB = new ArrayList<>();
@@ -477,10 +480,13 @@ public class FantasyService {
     			objDB = obj.convertToEntityDB();
         		i++;
         		logger.info("save Player " + i + " - " + obj.getNickname());
-            	playersDB_new.add(objDB);
 //    			fantasyPlayerDBRepository.save(objDB);
     		}
-//    		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(obj.getId());
+    		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(obj.getId());
+    		if (playerMarket != null && playerMarket.size() > 1) {
+    			objDB.setPlayerMarketValueYesterday(playerMarket.get(playerMarket.size()-2).getMarketValue());
+    		}
+        	playersDB_new.add(objDB);
 //        	for (FantasyPlayerMarket obj2: playerMarket){ 
 //        		FantasyPlayerMarketDB obj2DB = null;
 //        		if (playersMarketDB != null && playersMarketDB.size() > 0) {
