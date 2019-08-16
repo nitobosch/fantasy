@@ -483,8 +483,11 @@ public class FantasyService {
 //    			fantasyPlayerDBRepository.save(objDB);
     		}
     		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(obj.getId());
-    		if (playerMarket != null && playerMarket.size() > 1) {
-    			objDB.setPlayerMarketValueYesterday(playerMarket.get(playerMarket.size()-2).getMarketValue());
+    		if (playerMarket != null && playerMarket.size() > 0) {
+    			objDB.setPlayerMarketValue(playerMarket.get(playerMarket.size()-1).getMarketValue());
+        		if (playerMarket.size() > 1) {
+        			objDB.setPlayerMarketValueYesterday(playerMarket.get(playerMarket.size()-2).getMarketValue());
+        		}
     		}
         	playersDB_new.add(objDB);
 //        	for (FantasyPlayerMarket obj2: playerMarket){ 
