@@ -225,8 +225,8 @@ public class FantasyService {
   				  	.mapToInt(p -> p.getMoney())
   				  	.sum();
     		Integer totalSales = fantasyNewsDB.stream()
-    				.filter(p -> obj.getTeam().getManager().getManagerName().equals(p.getManagerName()))
-    				.filter(p -> "sale".equals(p.getOperation()))
+    				.filter(p -> ("sale".equals(p.getOperation()) && obj.getTeam().getManager().getManagerName().equals(p.getManagerName())) 
+    						  || ("purchase".equals(p.getOperation()) && obj.getTeam().getManager().getManagerName().equals(p.getPartnerName())))
     				.mapToInt(p -> p.getMoney())
     				.sum();
     		Integer totalBalance = initialBudget + totalSales - totalPurchases;
@@ -482,6 +482,7 @@ public class FantasyService {
         		logger.info("save Player " + i + " - " + obj.getNickname());
 //    			fantasyPlayerDBRepository.save(objDB);
     		}
+    		objDB.setPlayerPoints(obj.getPoints());
     		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(obj.getId());
     		if (playerMarket != null && playerMarket.size() > 0) {
     			objDB.setPlayerMarketValue(playerMarket.get(playerMarket.size()-1).getMarketValue());
