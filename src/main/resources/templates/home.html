@@ -213,7 +213,7 @@
   		return '<div class="row"><div class="col text-center"><span class="position player-'+ row.playerPositionId + '"> '+ row.playerPositionName + '</span></div></div>';
 	}
   	function numberFormatter(value, row) {
-  		if (value) {
+  		if (value != null) {
     		return value.toLocaleString();
   		}	
 	}
