@@ -90,9 +90,9 @@
 								      <th data-field="position" data-sortable="true">#</th>
 								      <th data-field="managerName" data-sortable="true">Manager</th>
 								      <th data-field="teamPoints" data-sortable="true">Puntos</th>
-								      <th data-field="teamValueFormatted" data-sortable="true" data-sort-name="teamValue">Valor</th>
-								      <th data-field="teamMoneyAproxFormatted" data-sortable="true" data-sort-name="teamMoneyAprox">Dinero (aprox.)</th>
-								      <th data-field="teamMoneyAvailableFormatted" data-sortable="true" data-sort-name="teamMoneyAvailable">Dinero disponible (aprox.)</th>
+								      <th data-field="teamValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
+								      <th data-field="teamMoneyAprox" data-sortable="true" data-formatter="numberFormatter">Dinero (aprox.)</th>
+								      <th data-field="teamMoneyAvailable" data-sortable="true" data-formatter="numberFormatter">Dinero disponible (aprox.)</th>
 								    </tr>
 								  </thead>
 								</table>
@@ -132,8 +132,8 @@
 						      <th data-field="playerPositionId" data-formatter="positionFormatter" data-sortable="true">Posición</th>
 						      <th data-field="playerPoints" data-sortable="true">Puntos</th>
 						      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
-						      <th data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
-						      <th data-field="diffMarketValuefromYesterdayFormatted" data-sortable="true" data-sort-name="diffMarketValuefromYesterday">Diff</th>
+						      <th data-field="playerValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
+						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter">Diff</th>
 						      <th data-field="playerNumBids" data-sortable="true">Pujas</th>
 						    </tr>
 						  </thead>
@@ -161,29 +161,29 @@
 						      <th rowspan="2" data-field="playerPositionName" data-formatter="positionFormatter" data-sortable="true" data-sort-name="playerPositionId" data-filter-control="select">Posición</th>
 						      <th rowspan="2" data-field="playerPoints" data-sortable="true">Puntos</th>
 						      <th rowspan="2" data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
-						      <th rowspan="2" data-field="playerValueFormatted" data-sortable="true" data-sort-name="playerValue">Valor</th>
+						      <th rowspan="2" data-field="playerValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
 						      <th colspan="3">Cláusula</th>
 						      <th colspan="2">vs Mercado Ayer</th>
-						      <th rowspan="2" data-field="playerPurchaseDateFormatted" data-sortable="true" data-sort-name="playerPurchaseDate">Fecha Compra</th>
+						      <th rowspan="2" data-field="playerPurchaseDate" data-sortable="true" data-formatter="dateFormatter">Fecha Compra</th>
 						      <th colspan="2">vs Mercado F. compra</th>
 						      <th colspan="2">vs Importe Compra</th>
 						    </tr>
 						    <tr>
 		<!-- Campos Cláusula -->
-						      <th data-field="playerBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerBuyoutClause">Total</th>
-						      <th data-field="diffMarketValuefromBuyoutClauseFormatted" data-sortable="true" data-sort-name="diffMarketValuefromBuyoutClause">Dif.</th>
-						      <th data-field="playerEndBuyoutClauseFormatted" data-sortable="true" data-sort-name="playerEndBuyoutClause">Fecha Fin</th>
+						      <th data-field="playerBuyoutClause" data-sortable="true" data-formatter="numberFormatter">Total</th>
+						      <th data-field="diffMarketValuefromBuyoutClause" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
+						      <th data-field="playerEndBuyoutClause" data-sortable="true" data-formatter="dateFormatter">Fecha Fin</th>
 		<!-- Campos vs Valor ayer -->
-						      <th data-field="playerMarketValueYesterdayFormatted" data-sortable="true" data-sort-name="playerMarketValueYesterday">Valor</th>
-						      <th data-field="diffMarketValuefromYesterdayFormatted" data-sortable="true" data-sort-name="diffMarketValuefromYesterday">Dif.</th>
+						      <th data-field="playerMarketValueYesterday" data-sortable="true" data-formatter="numberFormatter">Valor</th>
+						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
 <!-- 						      <th data-field="upDownMarketValuefromYesterday" data-sortable="true" data-filter-control="select">Up/Down</th> -->
 		<!-- Campos vs Valor compra -->
-						      <th data-field="playerMarketValuePurchaseDateFormatted" data-sortable="true" data-sort-name="playerMarketValuePurchaseDate">Valor</th>
-						      <th data-field="diffMarketValuefromPurchaseDateFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseDate">Dif.</th>
+						      <th data-field="playerMarketValuePurchaseDate" data-sortable="true" data-formatter="numberFormatter">Valor</th>
+						      <th data-field="diffMarketValuefromPurchaseDate" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
 <!-- 						      <th data-field="upDownMarketValuefromPurchaseDate" data-sortable="true">Up/Down</th> -->
 		<!-- Campos vs Importe compra -->
-						      <th data-field="playerPurchaseAmountFormatted" data-sortable="true" data-sort-name="playerPurchaseAmount">Importe</th>
-						      <th data-field="diffMarketValuefromPurchaseAmountFormatted" data-sortable="true" data-sort-name="diffMarketValuefromPurchaseAmount">Dif.</th>
+						      <th data-field="playerPurchaseAmount" data-sortable="true" data-formatter="numberFormatter">Importe</th>
+						      <th data-field="diffMarketValuefromPurchaseAmount" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
 <!-- 						      <th data-field="upDownMarketValuefromPurchaseAmount" data-sortable="true">Up/Down</th> -->
 						    </tr>
 						  </thead>
@@ -204,12 +204,24 @@
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
 <script>
   	function playerFormatter(value, row) {
     	return '<div class="row"><div class="col-1"><span class="team"><img height="20px" src="'+row.playerTeamImage+'" /></span></div><div class="col"><span class="name"> '+ value + '</span></div></div>';
   	}
   	function positionFormatter(value, row) {
   		return '<div class="row"><div class="col text-center"><span class="position player-'+ row.playerPositionId + '"> '+ row.playerPositionName + '</span></div></div>';
+	}
+  	function numberFormatter(value, row) {
+  		if (value) {
+    		return value.toLocaleString();
+  		}	
+	}
+  	function dateFormatter(value, row) {
+  		if (value) {
+  			var date = moment(value, moment.ISO_8601);
+    		return date.format("DD/MM/YYYY HH:mm");
+  		}	
 	}
   	$(document).ready(function(){
   		var $formtoken = $("#form-token");
@@ -239,7 +251,7 @@
   	 	   });
   	    $tablemarket.bootstrapTable({
    	 	   sorting: true,
-   	 	   sortName: "diffMarketValue",
+   	 	   sortName: "diffMarketValuefromYesterday",
    	 	   sortOrder: "desc"
    	 	   });
   	    $tableplayers.bootstrapTable({
@@ -249,7 +261,9 @@
   	 	   showMultiSortButton: true,
   	 	   pagination: true,
   	 	   showExtendedPagination: true,
-  	 	   filterControl: true
+  	 	   filterControl: true,
+   	 	   sortName: "diffMarketValuefromYesterday",
+   	 	   sortOrder: "desc"
   	 	   });
   	    function getLeagues(updatedb){
  		  	$error1.hide();
@@ -366,7 +380,7 @@
   		           {
   		               $tablemarket.bootstrapTable("refreshOptions",{
   		            	   data: data,
-  		         	 	   sortName: 'diffMarketValue',
+  		         	 	   sortName: 'diffMarketValuefromYesterday',
   		         	 	   sortOrder: 'desc'});
  		    		  	$spinner1.hide();
   		             	$divmarket.show();
@@ -401,7 +415,10 @@
   		           data: $formranking.serialize() + params, 
   		           success: function(data)
   		           {
-						$tableplayers.bootstrapTable("refreshOptions",{data: data});
+						$tableplayers.bootstrapTable("refreshOptions",{
+	  		            	   data: data,
+	  		         	 	   sortName: 'diffMarketValuefromYesterday',
+	  		         	 	   sortOrder: 'desc'});
   		   		  		$spinner2.hide();
   		             	$divplayers.show();
   		             	 $('html, body').animate({
