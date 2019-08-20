@@ -235,7 +235,8 @@ public class FantasyService {
 							|| ("purchase".equals(p.getOperation())
 									&& obj.getTeam().getManager().getManagerName().equals(p.getPartnerName())))
 					.mapToInt(p -> p.getMoney()).sum();
-			Integer totalBalance = initialBudget + totalSales - totalPurchases;
+			Integer totalMoneyPoints = obj.getPoints() * 100000;
+			Integer totalBalance = initialBudget + totalSales - totalPurchases + totalMoneyPoints;
 			logger.info("ranking: " + newRanking.getPosition() + " - " + newRanking.getManagerName() + "(" + totalSales + "-"
 					+ totalPurchases + "->" + totalBalance + ")");
 			newRanking.setTeamMoneyAprox(totalBalance);
