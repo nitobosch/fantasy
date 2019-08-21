@@ -41,11 +41,15 @@
 		    background: -webkit-linear-gradient(328deg,#f3c832 0,#ee9015 100%);
 		}
 		.col-value{
-		  	background: #ff795e;
+		  	background: #ff795e82;
 /*   		 	color: white; */
 		}
 		.col-yesterday{
-		  	background: #a6ffc6;
+		  	background: #c9ffdd;
+/*   		 	color: white; */
+		}
+		.cell-yesterday{
+		  	background: #4ae883;
 /*   		 	color: white; */
 		}
 	</style>
@@ -107,7 +111,7 @@
 					      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido</th>
 <!-- 					      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th> -->
 					      <th data-field="playerValue" data-sortable="true" data-formatter="numberFormatter" class="col-value">Valor</th>
-					      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter" class="col-yesterday">Dif. Ayer</th>
+					      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter" class="col-yesterday" data-cell-style="cellStyleDifYesterday">Dif. Ayer</th>
 					      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">Dif. AnteAyer</th>
 					      <th data-field="playerNumBids" data-sortable="true">Pujas</th>
 					    </tr>
@@ -200,7 +204,7 @@
 						      <th data-field="diffMarketValuefromBuyoutClause" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
 						      <th data-field="playerEndBuyoutClause" data-sortable="true" data-formatter="dateFormatter">Fecha Fin</th>
 		<!-- Campos vs -->
-						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter" class="col-yesterday">Ayer</th>
+						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter" class="col-yesterday" data-cell-style="cellStyleDifYesterday">Ayer</th>
 						      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">AnteAyer</th>
 						      <th data-field="diffMarketValuefromPurchaseDate" data-sortable="true" data-formatter="numberFormatter">F. Compra</th>
 		<!-- Campos Compra -->
@@ -256,6 +260,16 @@
   			var date = moment(value, moment.ISO_8601);
     		return date.format("DD/MM/YYYY HH:mm");
   		}	
+	}
+  	function cellStyleDifYesterday(value, row, index) {
+  		if (value >= 200000) {
+  			return {
+  		        classes: 'cell-yesterday'
+  		      }
+  		}	
+		return {
+	        classes: ''
+	      }
 	}
   	$(document).ready(function(){
   		var $formtoken = $("#form-token");
