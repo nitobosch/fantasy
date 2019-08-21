@@ -4,6 +4,7 @@ package com.nito.fantasy.model.marca;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -14,76 +15,88 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerHistoryDB;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "playerMaster",
-    "buyoutClause",
-    "playerTeamId",
-    "buyoutClauseLockedEndTime"
-})
+@JsonPropertyOrder({ "playerMaster", "playerMarket", "buyoutClause", "playerTeamId", "buyoutClauseLockedEndTime" })
 public class Player {
 
-    @JsonProperty("playerMaster")
-    private PlayerMaster playerMaster;
-    @JsonProperty("buyoutClause")
-    private Integer buyoutClause;
-    @JsonProperty("playerTeamId")
-    private String playerTeamId;
-    @JsonProperty("buyoutClauseLockedEndTime")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
-    private LocalDateTime buyoutClauseLockedEndTime;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	@JsonProperty("playerMaster")
+	private PlayerMaster playerMaster;
 
-    @JsonProperty("playerMaster")
-    public PlayerMaster getPlayerMaster() {
-        return playerMaster;
-    }
+	@JsonProperty("playerMarket")
+	private PlayerMarket playerMarket;
 
-    @JsonProperty("playerMaster")
-    public void setPlayerMaster(PlayerMaster playerMaster) {
-        this.playerMaster = playerMaster;
-    }
+	@JsonProperty("buyoutClause")
+	private Integer buyoutClause;
 
-    @JsonProperty("buyoutClause")
-    public Integer getBuyoutClause() {
-        return buyoutClause;
-    }
+	@JsonProperty("playerTeamId")
+	private String playerTeamId;
 
-    @JsonProperty("buyoutClause")
-    public void setBuyoutClause(Integer buyoutClause) {
-        this.buyoutClause = buyoutClause;
-    }
+	@JsonProperty("buyoutClauseLockedEndTime")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+	private LocalDateTime buyoutClauseLockedEndTime;
 
-    @JsonProperty("playerTeamId")
-    public String getPlayerTeamId() {
-        return playerTeamId;
-    }
+	@JsonIgnore
+	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("playerTeamId")
-    public void setPlayerTeamId(String playerTeamId) {
-        this.playerTeamId = playerTeamId;
-    }
+	@JsonProperty("playerMaster")
+	public PlayerMaster getPlayerMaster() {
+		return playerMaster;
+	}
 
-    @JsonProperty("buyoutClauseLockedEndTime")
-    public LocalDateTime getBuyoutClauseLockedEndTime() {
-        return buyoutClauseLockedEndTime;
-    }
+	@JsonProperty("playerMaster")
+	public void setPlayerMaster(PlayerMaster playerMaster) {
+		this.playerMaster = playerMaster;
+	}
 
-    @JsonProperty("buyoutClauseLockedEndTime")
-    public void setBuyoutClauseLockedEndTime(LocalDateTime buyoutClauseLockedEndTime) {
-        this.buyoutClauseLockedEndTime = buyoutClauseLockedEndTime;
-    }
+	@JsonProperty("playerMarket")
+	public PlayerMarket getPlayerMarket() {
+		return playerMarket;
+	}
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
+	@JsonProperty("playerMarket")
+	public void setPlayerMarket(PlayerMarket playerMarket) {
+		this.playerMarket = playerMarket;
+	}
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-	
+	@JsonProperty("buyoutClause")
+	public Integer getBuyoutClause() {
+		return buyoutClause;
+	}
+
+	@JsonProperty("buyoutClause")
+	public void setBuyoutClause(Integer buyoutClause) {
+		this.buyoutClause = buyoutClause;
+	}
+
+	@JsonProperty("playerTeamId")
+	public String getPlayerTeamId() {
+		return playerTeamId;
+	}
+
+	@JsonProperty("playerTeamId")
+	public void setPlayerTeamId(String playerTeamId) {
+		this.playerTeamId = playerTeamId;
+	}
+
+	@JsonProperty("buyoutClauseLockedEndTime")
+	public LocalDateTime getBuyoutClauseLockedEndTime() {
+		return buyoutClauseLockedEndTime;
+	}
+
+	@JsonProperty("buyoutClauseLockedEndTime")
+	public void setBuyoutClauseLockedEndTime(LocalDateTime buyoutClauseLockedEndTime) {
+		this.buyoutClauseLockedEndTime = buyoutClauseLockedEndTime;
+	}
+
+	@JsonAnyGetter
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
+
+	@JsonAnySetter
+	public void setAdditionalProperty(String name, Object value) {
+		this.additionalProperties.put(name, value);
+	}
+
 	public FantasyPlayerHistoryDB convertToEntityDB(String leagueId) {
 		FantasyPlayerHistoryDB fantasyPlayer = new FantasyPlayerHistoryDB();
 		fantasyPlayer.setPlayerId(this.playerMaster.getId());

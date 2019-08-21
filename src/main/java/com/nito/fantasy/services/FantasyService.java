@@ -193,12 +193,14 @@ public class FantasyService {
 
 	public List<Player> convertToDtoPlayersMarket(List<FantasyMarket> fantasyMarket) {
 		List<Player> players = new ArrayList<Player>();
+		Integer valueAnteayer = null;
 		for (FantasyMarket player : fantasyMarket) {
 			if ("marketPlayerLeague".equals(player.getDiscr())) {
 				Player newPlayer = new Player();
 				newPlayer.setPlayerId(player.getPlayerMaster().getId());
 				newPlayer.setPlayerName(player.getPlayerMaster().getNickname());
 				newPlayer.setPlayerPoints(player.getPlayerMaster().getPoints());
+				newPlayer.setPlayerAveragePoints(player.getPlayerMaster().getAveragePoints());
 				newPlayer.setPlayerPointsAA(player.getPlayerMaster().getLastSeasonPoints());
 				newPlayer.setPlayerValue(player.getPlayerMaster().getMarketValue());
 				newPlayer.setPlayerPointsAA(player.getPlayerMaster().getLastSeasonPoints());
@@ -211,7 +213,13 @@ public class FantasyService {
 
 				List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(player.getPlayerMaster().getId());
 				if (playerMarket != null && playerMarket.size() > 1) {
-					newPlayer.setUpDownYesterday(playerMarket.get(playerMarket.size() - 2).getMarketValue());
+					valueAnteayer = null;
+					if (playerMarket.size() > 2) {
+						valueAnteayer = playerMarket.get(playerMarket.size() - 3).getMarketValue();
+					}
+					if (playerMarket.size() > 1) {
+						newPlayer.setUpDownYesterday(playerMarket.get(playerMarket.size() - 2).getMarketValue(), valueAnteayer);
+					}
 				}
 
 				players.add(newPlayer);
@@ -250,6 +258,7 @@ public class FantasyService {
 	public List<Player> getFantasyPlayers() {
 		List<Player> players = new ArrayList<Player>();
 		List<FantasyPlayerDB> playersDB = getFantasyPlayersFromDB();
+		Integer valueAnteayer = null;
 		// List<FantasyPlayerMarketDB> playersMarketDB = getFantasyPlayersMarketFromDB();
 		int i = 0;
 		for (FantasyPlayerDB playerDB : playersDB) {
@@ -261,7 +270,13 @@ public class FantasyService {
 			logger.info(i + ":" + playerDB.getPlayerName() + " (" + playerDB.getId() + ")");
 			List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(playerDB.getId());
 			if (playerMarket != null && playerMarket.size() > 1) {
-				newPlayer.setUpDownYesterday(playerMarket.get(playerMarket.size() - 2).getMarketValue());
+				valueAnteayer = null;
+				if (playerMarket.size() > 2) {
+					valueAnteayer = playerMarket.get(playerMarket.size() - 3).getMarketValue();
+				}
+				if (playerMarket.size() > 1) {
+					newPlayer.setUpDownYesterday(playerMarket.get(playerMarket.size() - 2).getMarketValue(), valueAnteayer);
+				}
 			}
 			players.add(newPlayer);
 		}
@@ -302,6 +317,8 @@ public class FantasyService {
 		List<FantasyNewDB> playersNewsDB = getFantasyNewsFromDB(leagueId);
 
 		List<FantasyRanking> fantasyRanking = getRankingFantasy(authToken, leagueId);
+		Integer gamesPlayed = null;
+		Integer minutesPlayed = null;
 
 		for (FantasyRanking rankingObj : fantasyRanking) {
 			FantasyTeam team = getTeamFantasy(authToken, leagueId, rankingObj.getTeam().getId());
@@ -313,6 +330,7 @@ public class FantasyService {
 				newPlayer.setManagerName(team.getManager().getManagerName());
 				newPlayer.setTeamId(team.getId());
 				newPlayer.setPlayerPoints(player.getPlayerMaster().getPoints());
+				newPlayer.setPlayerAveragePoints(player.getPlayerMaster().getAveragePoints());
 				newPlayer.setPlayerPointsAA(player.getPlayerMaster().getLastSeasonPoints());
 				newPlayer.setPlayerMarketValue(player.getPlayerMaster().getMarketValue());
 				newPlayer.setPlayerBuyoutClause(player.getBuyoutClause());
@@ -321,11 +339,22 @@ public class FantasyService {
 				newPlayer.setPlayerTeam(player.getPlayerMaster().getTeam().getName());
 				newPlayer.setPlayerTeamImage(player.getPlayerMaster().getTeam().getBadgeColor());
 				newPlayer.setPlayerPositionId(player.getPlayerMaster().getPositionId());
-
+				gamesPlayed = player.getPlayerMaster().getLastStats().stream()
+						.filter(o -> o.getStats().getMinsPlayed().get(0) > 0).mapToInt(o -> 1).sum();
+				minutesPlayed = player.getPlayerMaster().getLastStats().stream()
+						.filter(o -> o.getStats().getMinsPlayed().get(0) > 0).mapToInt(o -> o.getStats().getMinsPlayed().get(0))
+						.sum();
+				newPlayer.setPlayerGamesPlayed(gamesPlayed);
+				newPlayer.setPlayerMinutesPlayed(minutesPlayed);
 				List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(player.getPlayerMaster().getId());
 
-				if (playerMarket != null) {
-					newPlayer.setPlayerMarketValueYesterday(playerMarket.get(playerMarket.size() - 2).getMarketValue());
+				if (playerMarket != null && playerMarket.size() > 0) {
+					if (playerMarket.size() > 2) {
+						newPlayer.setPlayerMarketValueYesterday2(playerMarket.get(playerMarket.size() - 3).getMarketValue());
+					}
+					if (playerMarket.size() > 1) {
+						newPlayer.setPlayerMarketValueYesterday(playerMarket.get(playerMarket.size() - 2).getMarketValue());
+					}
 
 					FantasyNewDB playerPurchase = playersNewsDB.stream().filter(p -> "purchase".equals(p.getOperation()))
 							.filter(p -> player.getPlayerMaster().getNickname().equals(p.getPlayerName()))
@@ -467,32 +496,8 @@ public class FantasyService {
 				logger.info("save Player " + i + " - " + obj.getNickname());
 				// fantasyPlayerDBRepository.save(objDB);
 			}
-			objDB.setPlayerPoints(obj.getPoints());
-			List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(obj.getId());
-			if (playerMarket != null && playerMarket.size() > 0) {
-				objDB.setPlayerMarketValue(playerMarket.get(playerMarket.size() - 1).getMarketValue());
-				if (playerMarket.size() > 1) {
-					objDB.setPlayerMarketValueYesterday(playerMarket.get(playerMarket.size() - 2).getMarketValue());
-				}
-			}
+			updateFantasyPlayerDB(objDB, obj);
 			playersDB_new.add(objDB);
-			// for (FantasyPlayerMarket obj2: playerMarket){
-			// FantasyPlayerMarketDB obj2DB = null;
-			// if (playersMarketDB != null && playersMarketDB.size() > 0) {
-			// String new_id = obj.getId()+"-"+Formatter.formatDateToId(obj2.getDate().toLocalDate());
-			// obj2DB = playersMarketDB.stream()
-			// .filter(p -> new_id.equals(p.getId()))
-			// .findAny()
-			// .orElse(null);
-			// }
-			// if (obj2DB == null) {
-			// obj2DB = obj2.convertToEntityDB(obj.getId());
-			// j++;
-			//// logger.info("save PlayerMarket " + j + " - " + obj2.getDate());
-			// playersMarketDB_new.add(obj2DB);
-			//// fantasyPlayerDBRepository.save(objDB);
-			// }
-			// }
 		}
 		dynamoDBMapper.batchSave(playersDB_new);
 		// fantasyPlayerDBRepository.saveAll(fantasyPlayersDB);
@@ -624,5 +629,35 @@ public class FantasyService {
 		logger.info("FantasyPlayerMarketDB - deteleAll");
 		dynamoDBMapper.batchDelete(market);
 		// fantasyPlayerMarketDBRepository.deleteAll();
+	}
+
+	public void updateFantasyPlayerDB(FantasyPlayerDB fantasyPlayerDB, FantasyPlayer fantasyPlayer) {
+		Integer gamesPlayed = null;
+		Integer minutesPlayed = null;
+		fantasyPlayerDB.setPlayerName(fantasyPlayer.getNickname());
+		fantasyPlayerDB.setPlayerImage(fantasyPlayer.getImages().getTransparent().get64x64());
+		fantasyPlayerDB.setPlayerPoints(fantasyPlayer.getPoints());
+		fantasyPlayerDB.setPlayerAveragePoints(fantasyPlayer.getAveragePoints());
+		fantasyPlayerDB.setPlayerPositionId(fantasyPlayer.getPositionId());
+		fantasyPlayerDB.setPlayerTeamName(fantasyPlayer.getTeam().getName());
+		fantasyPlayerDB.setPlayerTeamImage(fantasyPlayer.getTeam().getBadgeColor());
+		fantasyPlayerDB.setPlayerMarketValue(fantasyPlayer.getMarketValue());
+		gamesPlayed = fantasyPlayer.getPlayerStats().stream().filter(o -> o.getStats().getMinsPlayed().get(0) > 0)
+				.mapToInt(o -> 1).sum();
+		minutesPlayed = fantasyPlayer.getPlayerStats().stream().filter(o -> o.getStats().getMinsPlayed().get(0) > 0)
+				.mapToInt(o -> o.getStats().getMinsPlayed().get(0)).sum();
+		fantasyPlayerDB.setPlayerGamesPlayed(gamesPlayed);
+		fantasyPlayerDB.setPlayerMinutesPlayed(minutesPlayed);
+
+		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(fantasyPlayer.getId());
+		if (playerMarket != null && playerMarket.size() > 0) {
+			fantasyPlayerDB.setPlayerMarketValue(playerMarket.get(playerMarket.size() - 1).getMarketValue());
+			if (playerMarket.size() > 2) {
+				fantasyPlayerDB.setPlayerMarketValueYesterday2(playerMarket.get(playerMarket.size() - 3).getMarketValue());
+			}
+			if (playerMarket.size() > 1) {
+				fantasyPlayerDB.setPlayerMarketValueYesterday(playerMarket.get(playerMarket.size() - 2).getMarketValue());
+			}
+		}
 	}
 }

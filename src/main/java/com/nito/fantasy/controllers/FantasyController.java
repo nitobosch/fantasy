@@ -112,15 +112,7 @@ public class FantasyController {
 		return fantasyService.convertToDtoRanking(league, fantasyRanking);
 	}
 
-	@RequestMapping(value = "/fantasyJson/rankingupdate", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public List<Ranking> fantasyRankingUpdate(@RequestParam(name = "token", required = true) String token,
-			@RequestParam(name = "league", required = true) String league) {
-		List<FantasyRanking> fantasyRanking = fantasyService.getRankingFantasy(token, league);
-		return fantasyRanking.stream().map(n -> n.convertToDto()).collect(Collectors.toList());
-	}
-
-	@RequestMapping(value = "/fantasyJson/leagueplayers", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/fantasyJson/players", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public List<Player> fantasyLeaguePlayers(@RequestParam(name = "token", required = false) String token,
 			@RequestParam(name = "teams", required = false) String teams,
@@ -175,26 +167,6 @@ public class FantasyController {
 				.filter(n -> "".equals(daysBuyoutClause) || daysBuyoutClause == null
 						|| n.getPlayerEndBuyoutClause().isBefore(LocalDateTime.now().plusDays(Integer.valueOf(daysBuyoutClause))))
 				.collect(Collectors.toList());
-		// return fantasyService.getFantasyLeaguePlayersFromDB(league)
-		// .stream()
-		// .map(n -> n.convertToDto())
-		// .filter(n -> diffValueBuyoutClause == null || (n.getPlayerBuyoutClause() - n.getPlayerValue() <
-		// (diffValueBuyoutClause*1000000)))
-		// .filter(n -> "".equals(teams) || teams == null || teamsList == null || teamsList.size() == 0 ||
-		// teamsList.contains(n.getTeamId()))
-		// .filter(n -> daysBuyoutClause == null ||
-		// n.getPlayerEndBuyoutClause().isBefore(LocalDateTime.now().plusDays(daysBuyoutClause)))
-		// .collect(Collectors.toList());
-	}
-
-	@RequestMapping(value = "/fantasyJson/players", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public List<Player> fantasyPlayers(@RequestParam(name = "updatedb", required = false) String updatedb) {
-		logger.info("updatedb:" + updatedb);
-		if ("on".equals(updatedb)) {
-			fantasyService.updatePlayersFromDB();
-		}
-		return fantasyService.getFantasyPlayers();
 	}
 
 }

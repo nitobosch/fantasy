@@ -131,9 +131,11 @@
 						      <th data-field="playerName" data-formatter="playerFormatter" data-sortable="true">Jugador</th>
 						      <th data-field="playerPositionId" data-formatter="positionFormatter" data-sortable="true">Posición</th>
 						      <th data-field="playerPoints" data-sortable="true">Puntos</th>
+						      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
 						      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
 						      <th data-field="playerValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
-						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter">Diff</th>
+						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter">Dif. Ayer</th>
+						      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">Dif. AnteAyer</th>
 						      <th data-field="playerNumBids" data-sortable="true">Pujas</th>
 						    </tr>
 						  </thead>
@@ -156,35 +158,36 @@
 						  <thead>
 						    <tr>
 						      <th rowspan="2" data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
-		<!-- Campos Jugador -->
 						      <th rowspan="2" data-formatter="playerFormatter" data-field="playerName" data-sortable="true" data-filter-control="input">Jugador</th>
 						      <th rowspan="2" data-field="playerPositionName" data-formatter="positionFormatter" data-sortable="true" data-sort-name="playerPositionId" data-filter-control="select">Posición</th>
-						      <th rowspan="2" data-field="playerPoints" data-sortable="true">Puntos</th>
-						      <th rowspan="2" data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
 						      <th rowspan="2" data-field="playerValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
+						      <th colspan="8">Datos</th>
 						      <th colspan="3">Cláusula</th>
-						      <th colspan="2">vs Mercado Ayer</th>
-						      <th rowspan="2" data-field="playerPurchaseDate" data-sortable="true" data-formatter="dateFormatter">Fecha Compra</th>
-						      <th colspan="2">vs Mercado F. compra</th>
-						      <th colspan="2">vs Importe Compra</th>
+						      <th colspan="3">Dif. Valor Mercado vs ...</th>
+						      <th colspan="3">Compra</th>
 						    </tr>
 						    <tr>
+		<!-- Campos Puntos -->
+						      <th data-field="playerPoints" data-sortable="true">Puntos</th>
+						      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
+						      <th data-field="playerGamesPlayed" data-sortable="true">Partidos</th>
+						      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido</th>
+						      <th data-field="playerMinutesPlayed" data-sortable="true">Minutos</th>
+						      <th data-field="playerAveragePointsMinutes" data-sortable="true" data-formatter="numberFormatter4Dec">pts/minuto</th>
+						      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th>
+						      <th data-field="playerPointsAA" data-sortable="true">A.A.</th>
 		<!-- Campos Cláusula -->
 						      <th data-field="playerBuyoutClause" data-sortable="true" data-formatter="numberFormatter">Total</th>
 						      <th data-field="diffMarketValuefromBuyoutClause" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
 						      <th data-field="playerEndBuyoutClause" data-sortable="true" data-formatter="dateFormatter">Fecha Fin</th>
-		<!-- Campos vs Valor ayer -->
-						      <th data-field="playerMarketValueYesterday" data-sortable="true" data-formatter="numberFormatter">Valor</th>
-						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
-<!-- 						      <th data-field="upDownMarketValuefromYesterday" data-sortable="true" data-filter-control="select">Up/Down</th> -->
-		<!-- Campos vs Valor compra -->
-						      <th data-field="playerMarketValuePurchaseDate" data-sortable="true" data-formatter="numberFormatter">Valor</th>
-						      <th data-field="diffMarketValuefromPurchaseDate" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
-<!-- 						      <th data-field="upDownMarketValuefromPurchaseDate" data-sortable="true">Up/Down</th> -->
-		<!-- Campos vs Importe compra -->
+		<!-- Campos vs -->
+						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter">Ayer</th>
+						      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">AnteAyer</th>
+						      <th data-field="diffMarketValuefromPurchaseDate" data-sortable="true" data-formatter="numberFormatter">F. Compra</th>
+		<!-- Campos Compra -->
+						      <th data-field="playerPurchaseDate" data-sortable="true" data-formatter="dateFormatter">Fecha</th>
 						      <th data-field="playerPurchaseAmount" data-sortable="true" data-formatter="numberFormatter">Importe</th>
 						      <th data-field="diffMarketValuefromPurchaseAmount" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
-<!-- 						      <th data-field="upDownMarketValuefromPurchaseAmount" data-sortable="true">Up/Down</th> -->
 						    </tr>
 						  </thead>
 						</table>
@@ -215,6 +218,18 @@
   	function numberFormatter(value, row) {
   		if (value != null) {
     		return value.toLocaleString();
+  		}	
+	}
+  	function numberFormatter2Dec(value, row) {
+  		if (value != null) {
+  			var aux = Math.round(value * 100) / 100;
+    		return aux.toLocaleString();
+  		}	
+	}
+  	function numberFormatter4Dec(value, row) {
+  		if (value != null) {
+  			var aux = Math.round(value * 10000) / 10000;
+    		return aux.toLocaleString();
   		}	
 	}
   	function dateFormatter(value, row) {
@@ -411,7 +426,7 @@
   	  		var params = "&token=" + $("#token").val() + "&teams=" + teams.toString() + "&updatedb=" + updatedb + "&allplayers=" + allplayers;
   		    $.ajax({
   		           type: "GET",
-  		           url: "/fantasyJson/leagueplayers",
+  		           url: "/fantasyJson/players",
   		           data: $formranking.serialize() + params, 
   		           success: function(data)
   		           {

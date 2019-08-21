@@ -22,11 +22,19 @@ public class FantasyPlayerDB {
 
 	private Integer playerPoints;
 
+	private Double playerAveragePoints;
+
 	private Integer playerPointsAA;
+
+	private Integer playerGamesPlayed;
+
+	private Integer playerMinutesPlayed;
 
 	private Integer playerMarketValue;
 
 	private Integer playerMarketValueYesterday;
+
+	private Integer playerMarketValueYesterday2;
 
 	public FantasyPlayerDB() {
 	}
@@ -119,22 +127,65 @@ public class FantasyPlayerDB {
 		newPlayer.setManagerName("-");
 		newPlayer.setPlayerName(this.playerName);
 		newPlayer.setPlayerPoints(this.playerPoints);
+		newPlayer.setPlayerAveragePoints(this.playerAveragePoints);
 		newPlayer.setPlayerPointsAA(this.playerPointsAA);
 		newPlayer.setPlayerValue(this.playerMarketValue);
 		newPlayer.setPlayerImage(this.playerImage);
 		newPlayer.setPlayerTeamName(this.playerTeamName);
 		newPlayer.setPlayerTeamImage(this.playerTeamImage);
 		newPlayer.setPlayerPosition(this.playerPositionId);
-		newPlayer.setUpDownYesterday(this.playerMarketValueYesterday);
+		newPlayer.setUpDownYesterday(this.playerMarketValueYesterday, this.playerMarketValueYesterday2);
+		newPlayer.setPlayerGamesPlayed(this.playerGamesPlayed);
+		newPlayer.setPlayerMinutesPlayed(this.playerMinutesPlayed);
+		newPlayer.setPlayerAveragePointsGame();
+		newPlayer.setPlayerAveragePointsMinutes();
+		newPlayer.setPlayerAveragePointsMinutesGame();
 		return newPlayer;
 	}
 
+	@DynamoDBAttribute
 	public Integer getPlayerMarketValueYesterday() {
 		return playerMarketValueYesterday;
 	}
 
-	@DynamoDBAttribute
 	public void setPlayerMarketValueYesterday(Integer playerMarketValueYesterday) {
 		this.playerMarketValueYesterday = playerMarketValueYesterday;
+	}
+
+	@DynamoDBAttribute
+	public Integer getPlayerMarketValueYesterday2() {
+		return playerMarketValueYesterday2;
+	}
+
+	public void setPlayerMarketValueYesterday2(Integer playerMarketValueYesterday2) {
+		this.playerMarketValueYesterday2 = playerMarketValueYesterday2;
+	}
+
+	@DynamoDBAttribute
+	public Double getPlayerAveragePoints() {
+		return playerAveragePoints;
+	}
+
+	@DynamoDBAttribute
+	public void setPlayerAveragePoints(Double playerAveragePoints) {
+		this.playerAveragePoints = playerAveragePoints;
+	}
+
+	@DynamoDBAttribute
+	public Integer getPlayerGamesPlayed() {
+		return playerGamesPlayed;
+	}
+
+	public void setPlayerGamesPlayed(Integer playerGamesPlayed) {
+		this.playerGamesPlayed = playerGamesPlayed;
+	}
+
+	@DynamoDBAttribute
+	public Integer getPlayerMinutesPlayed() {
+		return playerMinutesPlayed;
+	}
+
+	public void setPlayerMinutesPlayed(Integer playerMinutesPlayed) {
+		this.playerMinutesPlayed = playerMinutesPlayed;
 	}
 }

@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.nito.fantasy.dto.Ranking;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -21,7 +20,10 @@ import com.nito.fantasy.dto.Ranking;
     "startingWeek",
     "banned",
     "teamValue",
-    "teamPoints"
+    "teamPoints",
+    "position",
+    "fixture_points",
+    "previousPosition"
 })
 public class FantasyTeam {
 
@@ -41,6 +43,12 @@ public class FantasyTeam {
     private Integer teamValue;
     @JsonProperty("teamPoints")
     private Integer teamPoints;
+    @JsonProperty("position")
+    private Integer position;
+    @JsonProperty("fixture_points")
+    private Integer fixturePoints;
+    @JsonProperty("previousPosition")
+    private Integer previousPosition;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -122,6 +130,36 @@ public class FantasyTeam {
     @JsonProperty("teamPoints")
     public void setTeamPoints(Integer teamPoints) {
         this.teamPoints = teamPoints;
+    }
+
+    @JsonProperty("position")
+    public Integer getPosition() {
+        return position;
+    }
+
+    @JsonProperty("position")
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
+    @JsonProperty("fixture_points")
+    public Integer getFixturePoints() {
+        return fixturePoints;
+    }
+
+    @JsonProperty("fixture_points")
+    public void setFixturePoints(Integer fixturePoints) {
+        this.fixturePoints = fixturePoints;
+    }
+
+    @JsonProperty("previousPosition")
+    public Integer getPreviousPosition() {
+        return previousPosition;
+    }
+
+    @JsonProperty("previousPosition")
+    public void setPreviousPosition(Integer previousPosition) {
+        this.previousPosition = previousPosition;
     }
 
     @JsonAnyGetter

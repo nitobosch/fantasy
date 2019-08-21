@@ -2,9 +2,13 @@ package com.nito.fantasy.dto;
 
 import java.time.LocalDateTime;
 
+import org.apache.log4j.Logger;
+
 import com.nito.fantasy.model.dynamodb.FantasyPlayerHistoryDB;
 
 public class Player {
+	private static final Logger logger = Logger.getLogger(Player.class);
+
 	private String playerId;
 
 	private String playerName;
@@ -15,9 +19,21 @@ public class Player {
 
 	private Integer playerPoints;
 
+	private Double playerAveragePoints;
+
+	private Double playerAveragePointsGame;
+
+	private Double playerAveragePointsMinutes;
+
+	private Double playerAveragePointsMinutesGame;
+
 	private Integer playerPointsAA;
 
 	private Integer playerValue;
+
+	private Integer playerGamesPlayed;
+
+	private Integer playerMinutesPlayed;
 
 	private Integer playerNumBids;
 
@@ -37,13 +53,13 @@ public class Player {
 
 	private Integer diffMarketValuefromBuyoutClause;
 
-	private String upDownMarketValuefromBuyoutClause;
-
 	private Integer playerMarketValueYesterday;
 
 	private Integer diffMarketValuefromYesterday;
 
-	private String upDownMarketValuefromYesterday;
+	private Integer playerMarketValueYesterday2;
+
+	private Integer diffMarketValuefromYesterday2;
 
 	private LocalDateTime playerPurchaseDate;
 
@@ -51,13 +67,9 @@ public class Player {
 
 	private Integer diffMarketValuefromPurchaseAmount;
 
-	private String upDownMarketValuefromPurchaseAmount;
-
 	private Integer playerMarketValuePurchaseDate;
 
 	private Integer diffMarketValuefromPurchaseDate;
-
-	private String upDownMarketValuefromPurchaseDate;
 
 	public Player() {
 		super();
@@ -86,14 +98,6 @@ public class Player {
 
 	public void setDiffMarketValuefromYesterday(Integer diffMarketValuefromYesterday) {
 		this.diffMarketValuefromYesterday = diffMarketValuefromYesterday;
-	}
-
-	public String getUpDownMarketValuefromYesterday() {
-		return upDownMarketValuefromYesterday;
-	}
-
-	public void setUpDownMarketValuefromYesterday(String upDownMarketValuefromYesterday) {
-		this.upDownMarketValuefromYesterday = upDownMarketValuefromYesterday;
 	}
 
 	public LocalDateTime getPlayerEndBuyoutClause() {
@@ -184,14 +188,6 @@ public class Player {
 		this.diffMarketValuefromPurchaseAmount = diffMarketValuefromPurchaseAmount;
 	}
 
-	public String getUpDownMarketValuefromPurchaseAmount() {
-		return upDownMarketValuefromPurchaseAmount;
-	}
-
-	public void setUpDownMarketValuefromPurchaseAmount(String upDownMarketValuefromPurchaseAmount) {
-		this.upDownMarketValuefromPurchaseAmount = upDownMarketValuefromPurchaseAmount;
-	}
-
 	public Integer getPlayerMarketValuePurchaseDate() {
 		return playerMarketValuePurchaseDate;
 	}
@@ -208,38 +204,22 @@ public class Player {
 		this.diffMarketValuefromPurchaseDate = diffMarketValuefromPurchaseDate;
 	}
 
-	public String getUpDownMarketValuefromPurchaseDate() {
-		return upDownMarketValuefromPurchaseDate;
-	}
-
-	public void setUpDownMarketValuefromPurchaseDate(String upDownMarketValuefromPurchaseDate) {
-		this.upDownMarketValuefromPurchaseDate = upDownMarketValuefromPurchaseDate;
-	}
-
 	public void setUpDownBuyoutClause() {
 
 		Integer diffValor = this.playerValue - this.playerBuyoutClause;
 		setDiffMarketValuefromBuyoutClause(diffValor);
-		if (diffValor > 0) {
-			setUpDownMarketValuefromBuyoutClause("UP");
-		} else if (diffValor < 0) {
-			setUpDownMarketValuefromBuyoutClause("DOWN");
-		} else {
-			setUpDownMarketValuefromBuyoutClause("=");
-		}
 	}
 
-	public void setUpDownYesterday(Integer valueAyer) {
+	public void setUpDownYesterday(Integer valueAyer, Integer valueAnteayer) {
 
 		Integer diffValor = this.playerValue - valueAyer;
 		setPlayerMarketValueYesterday(valueAyer);
 		setDiffMarketValuefromYesterday(diffValor);
-		if (diffValor > 0) {
-			setUpDownMarketValuefromYesterday("UP");
-		} else if (diffValor < 0) {
-			setUpDownMarketValuefromYesterday("DOWN");
-		} else {
-			setUpDownMarketValuefromYesterday("=");
+
+		if (valueAnteayer != null) {
+			diffValor = valueAyer - valueAnteayer;
+			setPlayerMarketValueYesterday2(valueAnteayer);
+			setDiffMarketValuefromYesterday2(diffValor);
 		}
 	}
 
@@ -252,24 +232,10 @@ public class Player {
 			setPlayerPurchaseAmount(purchaseAmount);
 			diffValor = this.playerValue - purchaseAmount;
 			setDiffMarketValuefromPurchaseAmount(diffValor);
-			if (diffValor > 0) {
-				setUpDownMarketValuefromPurchaseAmount("UP");
-			} else if (diffValor < 0) {
-				setUpDownMarketValuefromPurchaseAmount("DOWN");
-			} else {
-				setUpDownMarketValuefromPurchaseAmount("=");
-			}
 			// valor mercado
 			setPlayerMarketValuePurchaseDate(marketValue);
 			diffValor = this.playerValue - marketValue;
 			setDiffMarketValuefromPurchaseDate(diffValor);
-			if (diffValor > 0) {
-				setUpDownMarketValuefromPurchaseDate("UP");
-			} else if (diffValor < 0) {
-				setUpDownMarketValuefromPurchaseDate("DOWN");
-			} else {
-				setUpDownMarketValuefromPurchaseDate("=");
-			}
 		}
 	}
 
@@ -286,14 +252,6 @@ public class Player {
 
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
-	}
-
-	public String getUpDownMarketValuefromBuyoutClause() {
-		return upDownMarketValuefromBuyoutClause;
-	}
-
-	public void setUpDownMarketValuefromBuyoutClause(String upDownMarketValuefromBuyoutClause) {
-		this.upDownMarketValuefromBuyoutClause = upDownMarketValuefromBuyoutClause;
 	}
 
 	public Integer getPlayerNumBids() {
@@ -343,6 +301,98 @@ public class Player {
 
 	public void setPlayerPositionName(String playerPositionName) {
 		this.playerPositionName = playerPositionName;
+	}
+
+	public Double getPlayerAveragePoints() {
+		return playerAveragePoints;
+	}
+
+	public void setPlayerAveragePoints(Double playerAveragePoints) {
+		this.playerAveragePoints = playerAveragePoints;
+	}
+
+	public Integer getPlayerMarketValueYesterday2() {
+		return playerMarketValueYesterday2;
+	}
+
+	public void setPlayerMarketValueYesterday2(Integer playerMarketValueYesterday2) {
+		this.playerMarketValueYesterday2 = playerMarketValueYesterday2;
+	}
+
+	public Integer getDiffMarketValuefromYesterday2() {
+		return diffMarketValuefromYesterday2;
+	}
+
+	public void setDiffMarketValuefromYesterday2(Integer diffMarketValuefromYesterday2) {
+		this.diffMarketValuefromYesterday2 = diffMarketValuefromYesterday2;
+	}
+
+	public Integer getPlayerGamesPlayed() {
+		return playerGamesPlayed;
+	}
+
+	public void setPlayerGamesPlayed(Integer playerGamesPlayed) {
+		this.playerGamesPlayed = playerGamesPlayed;
+	}
+
+	public Integer getPlayerMinutesPlayed() {
+		return playerMinutesPlayed;
+	}
+
+	public void setPlayerMinutesPlayed(Integer playerMinutesPlayed) {
+		this.playerMinutesPlayed = playerMinutesPlayed;
+	}
+
+	public void setPlayerAveragePointsGame() {
+		Double aux = null;
+		if (this.playerGamesPlayed != null && this.playerGamesPlayed > 0) {
+			aux = (double) this.playerPoints / (double) this.playerGamesPlayed;
+		}
+		this.playerAveragePointsGame = aux;
+	}
+
+	public void setPlayerAveragePointsGame(Double playerAveragePointsGame) {
+		this.playerAveragePointsGame = playerAveragePointsGame;
+	}
+
+	public void setPlayerAveragePointsMinutes() {
+		Double aux = null;
+		if (this.playerMinutesPlayed != null && this.playerMinutesPlayed > 0) {
+			aux = (double) this.playerPoints / (double) this.playerMinutesPlayed;
+		}
+		this.playerAveragePointsMinutes = aux;
+	}
+
+	public void setPlayerAveragePointsMinutes(Double playerAveragePointsMinutes) {
+		this.playerAveragePointsMinutes = playerAveragePointsMinutes;
+	}
+
+	public void setPlayerAveragePointsMinutesGame() {
+		Double aux = null;
+		if (this.playerAveragePointsMinutes != null) {
+			aux = this.playerAveragePointsMinutes * 90;
+		}
+		this.playerAveragePointsMinutesGame = aux;
+	}
+
+	public void setPlayerAveragePointsMinutesGame(Double playerAveragePointsMinutesGame) {
+		this.playerAveragePointsMinutesGame = playerAveragePointsMinutesGame;
+	}
+
+	public Double getPlayerAveragePointsGame() {
+		return playerAveragePointsGame;
+	}
+
+	public Double getPlayerAveragePointsMinutes() {
+		return playerAveragePointsMinutes;
+	}
+
+	public Double getPlayerAveragePointsMinutesGame() {
+		return playerAveragePointsMinutesGame;
+	}
+
+	public void setPlayerPositionId(Integer playerPositionId) {
+		this.playerPositionId = playerPositionId;
 	}
 
 }

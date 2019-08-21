@@ -12,38 +12,64 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "id",
-    "name",
-    "slug",
     "badgeColor",
-    "badgeGrey",
-    "badgeWhite"
+    "badgeGray",
+    "badgeWhite",
+    "name",
+    "id",
+    "shortName",
+    "slug",
+    "dspId"
 })
 public class TeamPlayer {
 
-    @JsonProperty("id")
-    private String id;
-    @JsonProperty("name")
-    private String name;
-    @JsonProperty("slug")
-    private String slug;
     @JsonProperty("badgeColor")
     private String badgeColor;
-    @JsonProperty("badgeGrey")
-    private String badgeGrey;
+    @JsonProperty("badgeGray")
+    private String badgeGray;
     @JsonProperty("badgeWhite")
     private String badgeWhite;
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("id")
+    private String id;
+    @JsonProperty("shortName")
+    private String shortName;
+    @JsonProperty("slug")
+    private String slug;
+    @JsonProperty("dspId")
+    private Integer dspId;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("id")
-    public String getId() {
-        return id;
+    @JsonProperty("badgeColor")
+    public String getBadgeColor() {
+        return badgeColor;
     }
 
-    @JsonProperty("id")
-    public void setId(String id) {
-        this.id = id;
+    @JsonProperty("badgeColor")
+    public void setBadgeColor(String badgeColor) {
+        this.badgeColor = badgeColor;
+    }
+
+    @JsonProperty("badgeGray")
+    public String getBadgeGray() {
+        return badgeGray;
+    }
+
+    @JsonProperty("badgeGray")
+    public void setBadgeGray(String badgeGray) {
+        this.badgeGray = badgeGray;
+    }
+
+    @JsonProperty("badgeWhite")
+    public String getBadgeWhite() {
+        return badgeWhite;
+    }
+
+    @JsonProperty("badgeWhite")
+    public void setBadgeWhite(String badgeWhite) {
+        this.badgeWhite = badgeWhite;
     }
 
     @JsonProperty("name")
@@ -56,6 +82,26 @@ public class TeamPlayer {
         this.name = name;
     }
 
+    @JsonProperty("id")
+    public String getId() {
+        return id;
+    }
+
+    @JsonProperty("id")
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @JsonProperty("shortName")
+    public String getShortName() {
+        return shortName;
+    }
+
+    @JsonProperty("shortName")
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
     @JsonProperty("slug")
     public String getSlug() {
         return slug;
@@ -66,34 +112,14 @@ public class TeamPlayer {
         this.slug = slug;
     }
 
-    @JsonProperty("badgeColor")
-    public String getBadgeColor() {
-        return badgeColor;
+    @JsonProperty("dspId")
+    public Integer getDspId() {
+        return dspId;
     }
 
-    @JsonProperty("badgeColor")
-    public void setBadgeColor(String badgeColor) {
-        this.badgeColor = badgeColor;
-    }
-
-    @JsonProperty("badgeGrey")
-    public String getBadgeGrey() {
-        return badgeGrey;
-    }
-
-    @JsonProperty("badgeGrey")
-    public void setBadgeGrey(String badgeGrey) {
-        this.badgeGrey = badgeGrey;
-    }
-
-    @JsonProperty("badgeWhite")
-    public String getBadgeWhite() {
-        return badgeWhite;
-    }
-
-    @JsonProperty("badgeWhite")
-    public void setBadgeWhite(String badgeWhite) {
-        this.badgeWhite = badgeWhite;
+    @JsonProperty("dspId")
+    public void setDspId(Integer dspId) {
+        this.dspId = dspId;
     }
 
     @JsonAnyGetter
