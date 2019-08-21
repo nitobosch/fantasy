@@ -642,12 +642,14 @@ public class FantasyService {
 		fantasyPlayerDB.setPlayerTeamName(fantasyPlayer.getTeam().getName());
 		fantasyPlayerDB.setPlayerTeamImage(fantasyPlayer.getTeam().getBadgeColor());
 		fantasyPlayerDB.setPlayerMarketValue(fantasyPlayer.getMarketValue());
-		gamesPlayed = fantasyPlayer.getPlayerStats().stream().filter(o -> o.getStats().getMinsPlayed().get(0) > 0)
-				.mapToInt(o -> 1).sum();
-		minutesPlayed = fantasyPlayer.getPlayerStats().stream().filter(o -> o.getStats().getMinsPlayed().get(0) > 0)
-				.mapToInt(o -> o.getStats().getMinsPlayed().get(0)).sum();
-		fantasyPlayerDB.setPlayerGamesPlayed(gamesPlayed);
-		fantasyPlayerDB.setPlayerMinutesPlayed(minutesPlayed);
+		if (fantasyPlayer.getPlayerStats() != null && fantasyPlayer.getPlayerStats().size() > 0) {
+			gamesPlayed = fantasyPlayer.getPlayerStats().stream().filter(o -> o.getStats().getMinsPlayed().get(0) > 0)
+					.mapToInt(o -> 1).sum();
+			minutesPlayed = fantasyPlayer.getPlayerStats().stream().filter(o -> o.getStats().getMinsPlayed().get(0) > 0)
+					.mapToInt(o -> o.getStats().getMinsPlayed().get(0)).sum();
+			fantasyPlayerDB.setPlayerGamesPlayed(gamesPlayed);
+			fantasyPlayerDB.setPlayerMinutesPlayed(minutesPlayed);
+		}
 
 		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(fantasyPlayer.getId());
 		if (playerMarket != null && playerMarket.size() > 0) {
