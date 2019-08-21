@@ -41,15 +41,19 @@
 		    background: -webkit-linear-gradient(328deg,#f3c832 0,#ee9015 100%);
 		}
 		.col-value{
-		  	background: #ff795e82;
+		  	background: #ff795e47;
 /*   		 	color: white; */
 		}
 		.col-yesterday{
-		  	background: #c9ffdd;
+		  	background: #80f9ad36;
 /*   		 	color: white; */
 		}
-		.cell-yesterday{
-		  	background: #4ae883;
+		.cell-yesterday-ok{
+		  	background: #00ff5c82;
+/*   		 	color: white; */
+		}
+		.cell-value-ok{
+		  	background: #ff2b006b;
 /*   		 	color: white; */
 		}
 	</style>
@@ -110,7 +114,7 @@
 					      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
 					      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido</th>
 <!-- 					      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th> -->
-					      <th data-field="playerValue" data-sortable="true" data-formatter="numberFormatter" class="col-value">Valor</th>
+					      <th data-field="playerValue" data-sortable="true" data-formatter="numberFormatter" class="col-value" data-cell-style="cellStyleValue">Valor</th>
 					      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter" class="col-yesterday" data-cell-style="cellStyleDifYesterday">Dif. Ayer</th>
 					      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">Dif. AnteAyer</th>
 					      <th data-field="playerNumBids" data-sortable="true">Pujas</th>
@@ -184,7 +188,7 @@
 						      <th rowspan="2" data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
 						      <th rowspan="2" data-formatter="playerFormatter" data-field="playerName" data-sortable="true" data-filter-control="input">Jugador</th>
 						      <th rowspan="2" data-field="playerPositionName" data-formatter="positionFormatter" data-sortable="true" data-sort-name="playerPositionId" data-filter-control="select">Posición</th>
-						      <th rowspan="2" data-field="playerValue" data-sortable="true" data-formatter="numberFormatter" class="col-value">Valor</th>
+						      <th rowspan="2" data-field="playerValue" data-sortable="true" data-formatter="numberFormatter" class="col-value" data-cell-style="cellStyleValue">Valor</th>
 						      <th colspan="6" data-halign="center">Datos</th>
 						      <th colspan="3" data-halign="center">Cláusula</th>
 						      <th colspan="3" data-halign="center">Dif. Valor Mercado vs ...</th>
@@ -264,7 +268,17 @@
   	function cellStyleDifYesterday(value, row, index) {
   		if (value >= 200000) {
   			return {
-  		        classes: 'cell-yesterday'
+  		        classes: 'cell-yesterday-ok'
+  		      }
+  		}	
+		return {
+	        classes: ''
+	      }
+	}
+  	function cellStyleValue(value, row, index) {
+  		if (value >= 10000000) {
+  			return {
+  		        classes: 'cell-value-ok'
   		      }
   		}	
 		return {
