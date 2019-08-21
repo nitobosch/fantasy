@@ -49,46 +49,6 @@ public class FantasyController {
 		return "home";
 	}
 
-	@GetMapping("/players")
-	public String players() {
-		return "players";
-	}
-
-	@GetMapping("/market")
-	public String market() {
-		return "market";
-	}
-
-	@RequestMapping(value = "/update/history", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public List<FantasyPlayerHistoryDB> udpatehistorydb(@RequestParam(name = "token", required = true) String token,
-			@RequestParam(name = "league", required = true) String league) {
-		return fantasyService.updatePlayersHistoryfromDB(token, league);
-	}
-
-	@RequestMapping(value = "/update/news", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public List<FantasyNewDB> udpatenewsdb(@RequestParam(name = "token", required = true) String token,
-			@RequestParam(name = "league", required = true) String league) {
-		return fantasyService.updateAllNewsfromDB(token, league);
-	}
-
-	@RequestMapping(value = "/update/players", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public List<FantasyPlayerDB> udpatePlayers() {
-		logger.info("udpateAllPlayers");
-		fantasyService.updatePlayersFromDB();
-		return fantasyService.getFantasyPlayersFromDB();
-	}
-
-	@RequestMapping(value = "/fantasyJson/market", method = RequestMethod.GET, produces = "application/json")
-	@ResponseBody
-	public List<Player> fantasyMarket(@RequestParam(name = "token", required = true) String token,
-			@RequestParam(name = "league", required = true) String league) {
-		List<FantasyMarket> fantasyMarket = fantasyService.getMarketFantasy(token, league);
-		return fantasyService.convertToDtoPlayersMarket(fantasyMarket);
-	}
-
 	@RequestMapping(value = "/fantasyJson/leagues", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public List<League> fantasyLeagues(@RequestParam(name = "token", required = true) String token,
@@ -98,6 +58,14 @@ public class FantasyController {
 			fantasyService.updatePlayersFromDB();
 		}
 		return fantasyLeagues.stream().map(n -> n.convertToDto()).collect(Collectors.toList());
+	}
+
+	@RequestMapping(value = "/fantasyJson/market", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<Player> fantasyMarket(@RequestParam(name = "token", required = true) String token,
+			@RequestParam(name = "league", required = true) String league) {
+		List<FantasyMarket> fantasyMarket = fantasyService.getMarketFantasy(token, league);
+		return fantasyService.convertToDto(fantasyMarket);
 	}
 
 	@RequestMapping(value = "/fantasyJson/ranking", method = RequestMethod.GET, produces = "application/json")
@@ -138,13 +106,10 @@ public class FantasyController {
 			fantasyService.updatePlayersFromDB();
 			fantasyService.updateFantasyLeaguePlayersFromDB(token, league);
 		}
-		leaguePlayers = fantasyService.getFantasyLeaguePlayersFromDB(league).stream().map(n -> n.convertToDto())
-				.collect(Collectors.toList());
-		logger.info("leaguePlayers.size():" + leaguePlayers.size());
+		leaguePlayers = fantasyService.convertToDtoFromLeaguePlayersDB(fantasyService.getFantasyLeaguePlayersFromDB(league));
 		leaguePlayersId = leaguePlayers.stream().map(n -> n.getPlayerId()).collect(Collectors.toList());
-		logger.info("leaguePlayersId.size():" + leaguePlayersId.size());
+		logger.info("leaguePlayers.size():" + leaguePlayers.size());
 		if ("on".equals(allplayers)) {
-			// allPlayers = fantasyService.getFantasyPlayers();
 			allPlayers = fantasyService.getFantasyPlayersFromDB().stream().map(n -> n.convertToDto())
 					.collect(Collectors.toList());
 			logger.info("allPlayers.size():" + allPlayers.size());

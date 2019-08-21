@@ -23,35 +23,9 @@ public class FantasyLeaguePlayerDB {
 
 	private String playerId;
 
-	private String playerName;
-
-	private String playerImage;
-
-	private String playerTeam;
-
-	private String playerTeamImage;
-
-	private Integer playerPositionId;
-
 	private String managerName;
 
 	private String teamId;
-
-	private Integer playerPoints;
-
-	private Double playerAveragePoints;
-
-	private Integer playerPointsAA;
-
-	private Integer playerGamesPlayed;
-
-	private Integer playerMinutesPlayed;
-
-	private Integer playerMarketValue;
-
-	private Integer playerMarketValueYesterday;
-
-	private Integer playerMarketValueYesterday2;
 
 	private Integer playerBuyoutClause;
 
@@ -95,48 +69,12 @@ public class FantasyLeaguePlayerDB {
 	}
 
 	@DynamoDBAttribute
-	public String getPlayerName() {
-		return playerName;
-	}
-
-	public void setPlayerName(String playerName) {
-		this.playerName = playerName;
-	}
-
-	@DynamoDBAttribute
 	public String getManagerName() {
 		return managerName;
 	}
 
 	public void setManagerName(String managerName) {
 		this.managerName = managerName;
-	}
-
-	@DynamoDBAttribute
-	public Integer getPlayerPoints() {
-		return playerPoints;
-	}
-
-	public void setPlayerPoints(Integer playerPoints) {
-		this.playerPoints = playerPoints;
-	}
-
-	@DynamoDBAttribute
-	public Integer getPlayerPointsAA() {
-		return playerPointsAA;
-	}
-
-	public void setPlayerPointsAA(Integer playerPointsAA) {
-		this.playerPointsAA = playerPointsAA;
-	}
-
-	@DynamoDBAttribute
-	public Integer getPlayerMarketValue() {
-		return playerMarketValue;
-	}
-
-	public void setPlayerMarketValue(Integer playerMarketValue) {
-		this.playerMarketValue = playerMarketValue;
 	}
 
 	@DynamoDBAttribute
@@ -186,77 +124,15 @@ public class FantasyLeaguePlayerDB {
 		this.playerMarketValuePurchaseDate = playerMarketValuePurchaseDate;
 	}
 
-	@DynamoDBAttribute
-	public Integer getPlayerMarketValueYesterday() {
-		return playerMarketValueYesterday;
-	}
-
-	public void setPlayerMarketValueYesterday(Integer playerMarketValueYesterday) {
-		this.playerMarketValueYesterday = playerMarketValueYesterday;
-	}
-
-	@DynamoDBAttribute
-	public String getPlayerImage() {
-		return playerImage;
-	}
-
-	public void setPlayerImage(String playerImage) {
-		this.playerImage = playerImage;
-	}
-
-	@DynamoDBAttribute
-	public String getPlayerTeam() {
-		return playerTeam;
-	}
-
-	public void setPlayerTeam(String playerTeam) {
-		this.playerTeam = playerTeam;
-	}
-
-	@DynamoDBAttribute
-	public String getPlayerTeamImage() {
-		return playerTeamImage;
-	}
-
-	public void setPlayerTeamImage(String playerTeamImage) {
-		this.playerTeamImage = playerTeamImage;
-	}
-
-	@DynamoDBAttribute
-	public Integer getPlayerPositionId() {
-		return playerPositionId;
-	}
-
-	public void setPlayerPositionId(Integer playerPositionId) {
-		this.playerPositionId = playerPositionId;
-	}
-
 	public Player convertToDto() {
 		Player newPlayer = new Player();
 		newPlayer.setPlayerId(this.playerId);
-		newPlayer.setPlayerName(this.playerName);
 		newPlayer.setManagerName(Formatter.parseNull(this.managerName));
 		newPlayer.setTeamId(this.teamId);
-		newPlayer.setPlayerPoints(this.playerPoints);
-		newPlayer.setPlayerAveragePoints(this.playerAveragePoints);
-		newPlayer.setPlayerPointsAA(this.playerPointsAA);
-		newPlayer.setPlayerValue(this.playerMarketValue);
 		newPlayer.setPlayerBuyoutClause(this.playerBuyoutClause);
 		newPlayer.setPlayerEndBuyoutClause(this.playerEndBuyoutClause);
 		newPlayer.setUpDownBuyoutClause();
-		newPlayer.setUpDownYesterday(this.playerMarketValueYesterday, this.playerMarketValueYesterday2);
 		newPlayer.setUpDownPurchaseDate(this.playerPurchaseDate, this.playerPurchaseAmount, this.playerMarketValuePurchaseDate);
-		newPlayer.setPlayerImage(this.playerImage);
-		newPlayer.setPlayerTeamName(this.playerTeam);
-		newPlayer.setPlayerTeamImage(this.playerTeamImage);
-		newPlayer.setPlayerPosition(this.playerPositionId);
-		newPlayer.setPlayerGamesPlayed(this.playerGamesPlayed);
-		newPlayer.setPlayerMinutesPlayed(this.playerMinutesPlayed);
-		logger.info(this.playerName + "(" + this.playerPoints + ") -> " + "games:" + this.playerGamesPlayed + ", minutes:"
-				+ this.playerMinutesPlayed);
-		newPlayer.setPlayerAveragePointsGame();
-		newPlayer.setPlayerAveragePointsMinutes();
-		newPlayer.setPlayerAveragePointsMinutesGame();
 		return newPlayer;
 	}
 
@@ -267,41 +143,5 @@ public class FantasyLeaguePlayerDB {
 
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
-	}
-
-	@DynamoDBAttribute
-	public Integer getPlayerMarketValueYesterday2() {
-		return playerMarketValueYesterday2;
-	}
-
-	public void setPlayerMarketValueYesterday2(Integer playerMarketValueYesterday2) {
-		this.playerMarketValueYesterday2 = playerMarketValueYesterday2;
-	}
-
-	@DynamoDBAttribute
-	public Double getPlayerAveragePoints() {
-		return playerAveragePoints;
-	}
-
-	public void setPlayerAveragePoints(Double playerAveragePoints) {
-		this.playerAveragePoints = playerAveragePoints;
-	}
-
-	@DynamoDBAttribute
-	public Integer getPlayerGamesPlayed() {
-		return playerGamesPlayed;
-	}
-
-	public void setPlayerGamesPlayed(Integer playerGamesPlayed) {
-		this.playerGamesPlayed = playerGamesPlayed;
-	}
-
-	@DynamoDBAttribute
-	public Integer getPlayerMinutesPlayed() {
-		return playerMinutesPlayed;
-	}
-
-	public void setPlayerMinutesPlayed(Integer playerMinutesPlayed) {
-		this.playerMinutesPlayed = playerMinutesPlayed;
 	}
 }

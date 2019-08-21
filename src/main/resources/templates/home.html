@@ -40,6 +40,14 @@
    		.position.player-4{
 		    background: -webkit-linear-gradient(328deg,#f3c832 0,#ee9015 100%);
 		}
+		.col-value{
+		  	background: #ff795e;
+/*   		 	color: white; */
+		}
+		.col-yesterday{
+		  	background: #a6ffc6;
+/*   		 	color: white; */
+		}
 	</style>
 </head>
 <body>
@@ -80,77 +88,89 @@
 					<div id="error1" class="alert alert-danger" style="display:none;">
 					  <strong>Error!</strong> <span id="error1-txt"></span>
 					</div>
-					<div id="div-ranking" style="display:none;">
-						<div class="row">
-						    <div class="col">
-								<table id="table-ranking">
-								  <thead>
-								    <tr>
-								      <th data-field="state" data-checkbox="true"></th>
-								      <th data-field="position" data-sortable="true">#</th>
-								      <th data-field="managerName" data-sortable="true">Manager</th>
-								      <th data-field="teamPoints" data-sortable="true">Puntos</th>
-								      <th data-field="teamValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
-								      <th data-field="teamMoneyAprox" data-sortable="true" data-formatter="numberFormatter">Dinero (aprox.)</th>
-								      <th data-field="teamMoneyAvailable" data-sortable="true" data-formatter="numberFormatter">Dinero disponible (aprox.)</th>
-								    </tr>
-								  </thead>
-								</table>
-						    </div>
-					    </div>
-						<div class="row">
-						    <div class="col">
-								<form id="form-ranking">
-									<div class="form-group">
-									  <label for="exampleInputEmail1">Diferencia entre Valor de Mercado y Cláusula (en Millones)</label>
-									 	<input type="number" class="form-control" id="diffValueBuyoutClause" name="diffValueBuyoutClause" placeholder="Enter difference" autocomplete="off">
-									</div>
-									<div class="form-group">
-									  <label for="exampleInputEmail1">Días para fin de cláusula</label>
-									 	<input type="number" class="form-control" id="chkDaysBuyoutClause" name="daysBuyoutClause" placeholder="Enter days" autocomplete="off">
-									</div>
-									<input type="hidden" id="form-ranking-league" name="league">
-									<div class="btn-group dropright">
-										<button type="submit" class="btn btn-success">Show Players</button>
-									  	<button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
-									    	<span class="sr-only"></span>
-									  	</button>
-									  	<ul class="dropdown-menu" role="menu">
-<!-- 									    	<li><a id="btn-updatedb" class="dropdown-item" href="#">Update</a></li> -->
-									    	<li><a id="btn-allplayers" class="dropdown-item" href="#">All players</a></li>
-									  	</ul>
-									</div>
-								</form>
-						    </div>
-					    </div>
-					</div>
-					<div id="div-market" style="display:none;">
-						<table id="table-market">
-						  <thead>
-						    <tr>
-						      <th data-field="playerName" data-formatter="playerFormatter" data-sortable="true">Jugador</th>
-						      <th data-field="playerPositionId" data-formatter="positionFormatter" data-sortable="true">Posición</th>
-						      <th data-field="playerPoints" data-sortable="true">Puntos</th>
-						      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
-						      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
-						      <th data-field="playerValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
-						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter">Dif. Ayer</th>
-						      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">Dif. AnteAyer</th>
-						      <th data-field="playerNumBids" data-sortable="true">Pujas</th>
-						    </tr>
-						  </thead>
-						</table>
-					</div>
 			    </div>
 		    </div>
 	    </div>
+	    <div id="div-market" style="display:none; margin-right: 25rem; margin-left: 25rem;">
+			<div class="row">
+			    <div class="col">
+					<table id="table-market">
+					  <thead>
+					    <tr>
+					      <th data-field="playerName" data-formatter="playerFormatter" data-sortable="true">Jugador</th>
+					      <th data-field="playerPositionId" data-formatter="positionFormatter" data-sortable="true">Posición</th>
+					      <th data-field="playerPoints" data-sortable="true">Puntos</th>
+					      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
+					      <th data-field="playerGamesPlayed" data-sortable="true">Partidos</th>
+					      <th data-field="playerMinutesPlayed" data-sortable="true">Minutos</th>
+					      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
+					      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido</th>
+<!-- 					      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th> -->
+					      <th data-field="playerValue" data-sortable="true" data-formatter="numberFormatter" class="col-value">Valor</th>
+					      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter" class="col-yesterday">Dif. Ayer</th>
+					      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">Dif. AnteAyer</th>
+					      <th data-field="playerNumBids" data-sortable="true">Pujas</th>
+					    </tr>
+					  </thead>
+					</table>
+			    </div>
+		    </div>
+	    </div>
+	    <div id="div-ranking" class="container" style="display:none;">
+			<div class="row">
+			    <div class="col">
+					<table id="table-ranking">
+					  <thead>
+					    <tr>
+					      <th data-field="state" data-checkbox="true"></th>
+					      <th data-field="position" data-sortable="true">#</th>
+					      <th data-field="managerName" data-sortable="true">Manager</th>
+					      <th data-field="teamPoints" data-sortable="true">Puntos</th>
+					      <th data-field="teamValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
+					      <th data-field="teamMoneyAprox" data-sortable="true" data-formatter="numberFormatter">Dinero (aprox.)</th>
+					      <th data-field="teamMoneyAvailable" data-sortable="true" data-formatter="numberFormatter">Dinero disponible (aprox.)</th>
+					    </tr>
+					  </thead>
+					</table>
+			    </div>
+		    </div>
+			<div class="row">
+			    <div class="col">
+					<form id="form-ranking">
+						<div class="form-group">
+						  <label for="exampleInputEmail1">Diferencia entre Valor de Mercado y Cláusula (en Millones)</label>
+						 	<input type="number" class="form-control" id="diffValueBuyoutClause" name="diffValueBuyoutClause" placeholder="Enter difference" autocomplete="off">
+						</div>
+						<div class="form-group">
+						  <label for="exampleInputEmail1">Días para fin de cláusula</label>
+						 	<input type="number" class="form-control" id="chkDaysBuyoutClause" name="daysBuyoutClause" placeholder="Enter days" autocomplete="off">
+						</div>
+						<input type="hidden" id="form-ranking-league" name="league">
+						<div class="btn-group dropright">
+							<button type="submit" class="btn btn-success">Show Players</button>
+						  	<button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+						    	<span class="sr-only"></span>
+						  	</button>
+						  	<ul class="dropdown-menu" role="menu">
+<!-- 									    	<li><a id="btn-updatedb" class="dropdown-item" href="#">Update</a></li> -->
+						    	<li><a id="btn-allplayers" class="dropdown-item" href="#">All players</a></li>
+						  	</ul>
+						</div>
+					</form>
+			    </div>
+		    </div>
+			<div class="row">
+			    <div class="col">
+					<div id="spinner2" class="spinner-border text-success" role="status" style="display:none;">
+					  <span class="sr-only">Loading...</span>
+					</div>
+					<div id="error2" class="alert alert-danger" style="display:none;">
+					  <strong>Error!</strong> <span id="error2-txt"></span>
+					</div>
+			    </div>
+		    </div>
+		</div>
 	    <div style="margin-right: 2rem; margin-left: 2rem;">
-			<div id="spinner2" class="spinner-border text-success" role="status" style="display:none;">
-			  <span class="sr-only">Loading...</span>
-			</div>
-			<div id="error2" class="alert alert-danger" style="display:none;">
-			  <strong>Error!</strong> <span id="error2-txt"></span>
-			</div>
 			<div id="div-players" style="display:none;">
 				<div class="row">
 				    <div class="col">
@@ -160,28 +180,27 @@
 						      <th rowspan="2" data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
 						      <th rowspan="2" data-formatter="playerFormatter" data-field="playerName" data-sortable="true" data-filter-control="input">Jugador</th>
 						      <th rowspan="2" data-field="playerPositionName" data-formatter="positionFormatter" data-sortable="true" data-sort-name="playerPositionId" data-filter-control="select">Posición</th>
-						      <th rowspan="2" data-field="playerValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
-						      <th colspan="8">Datos</th>
-						      <th colspan="3">Cláusula</th>
-						      <th colspan="3">Dif. Valor Mercado vs ...</th>
-						      <th colspan="3">Compra</th>
+						      <th rowspan="2" data-field="playerValue" data-sortable="true" data-formatter="numberFormatter" class="col-value">Valor</th>
+						      <th colspan="6" data-halign="center">Datos</th>
+						      <th colspan="3" data-halign="center">Cláusula</th>
+						      <th colspan="3" data-halign="center">Dif. Valor Mercado vs ...</th>
+						      <th colspan="3" data-halign="center">Compra</th>
 						    </tr>
 						    <tr>
 		<!-- Campos Puntos -->
 						      <th data-field="playerPoints" data-sortable="true">Puntos</th>
-						      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
-						      <th data-field="playerGamesPlayed" data-sortable="true">Partidos</th>
-						      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido</th>
-						      <th data-field="playerMinutesPlayed" data-sortable="true">Minutos</th>
-						      <th data-field="playerAveragePointsMinutes" data-sortable="true" data-formatter="numberFormatter4Dec">pts/minuto</th>
-						      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th>
 						      <th data-field="playerPointsAA" data-sortable="true">A.A.</th>
+						      <th data-field="playerGamesPlayed" data-sortable="true">Partidos</th>
+						      <th data-field="playerMinutesPlayed" data-sortable="true">Minutos</th>
+						      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
+						      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido</th>
+<!-- 						      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th> -->
 		<!-- Campos Cláusula -->
 						      <th data-field="playerBuyoutClause" data-sortable="true" data-formatter="numberFormatter">Total</th>
 						      <th data-field="diffMarketValuefromBuyoutClause" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
 						      <th data-field="playerEndBuyoutClause" data-sortable="true" data-formatter="dateFormatter">Fecha Fin</th>
 		<!-- Campos vs -->
-						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter">Ayer</th>
+						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter" class="col-yesterday">Ayer</th>
 						      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">AnteAyer</th>
 						      <th data-field="diffMarketValuefromPurchaseDate" data-sortable="true" data-formatter="numberFormatter">F. Compra</th>
 		<!-- Campos Compra -->
