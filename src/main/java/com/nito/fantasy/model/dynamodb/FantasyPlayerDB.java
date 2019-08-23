@@ -28,11 +28,15 @@ public class FantasyPlayerDB {
 
 	private Integer playerGamesPlayed;
 
+	private Integer playerGamesPlayed2;
+
 	private Integer playerMinutesPlayed;
 
 	private Integer playerMarketValue;
 
 	private Integer playerMarketValueYesterday;
+
+	private Integer playerMarketValueYesterday1;
 
 	private Integer playerMarketValueYesterday2;
 
@@ -134,12 +138,16 @@ public class FantasyPlayerDB {
 		newPlayer.setPlayerTeamName(this.playerTeamName);
 		newPlayer.setPlayerTeamImage(this.playerTeamImage);
 		newPlayer.setPlayerPosition(this.playerPositionId);
-		newPlayer.setUpDownYesterday(this.playerMarketValueYesterday, this.playerMarketValueYesterday2);
+		newPlayer.setUpDownYesterday(this.playerMarketValueYesterday, this.playerMarketValueYesterday1,
+				this.playerMarketValueYesterday2);
 		newPlayer.setPlayerGamesPlayed(this.playerGamesPlayed);
+		newPlayer.setPlayerGamesPlayed2(this.playerGamesPlayed2);
 		newPlayer.setPlayerMinutesPlayed(this.playerMinutesPlayed);
 		newPlayer.setPlayerAveragePointsGame();
+		newPlayer.setPlayerAveragePointsGame2();
 		newPlayer.setPlayerAveragePointsMinutes();
 		newPlayer.setPlayerAveragePointsMinutesGame();
+		newPlayer.setPlayerAverageMinutesGame();
 		return newPlayer;
 	}
 
@@ -187,5 +195,23 @@ public class FantasyPlayerDB {
 
 	public void setPlayerMinutesPlayed(Integer playerMinutesPlayed) {
 		this.playerMinutesPlayed = playerMinutesPlayed;
+	}
+
+	@DynamoDBAttribute
+	public Integer getPlayerMarketValueYesterday1() {
+		return playerMarketValueYesterday1;
+	}
+
+	public void setPlayerMarketValueYesterday1(Integer playerMarketValueYesterday1) {
+		this.playerMarketValueYesterday1 = playerMarketValueYesterday1;
+	}
+
+	@DynamoDBAttribute
+	public Integer getPlayerGamesPlayed2() {
+		return playerGamesPlayed2;
+	}
+
+	public void setPlayerGamesPlayed2(Integer playerGamesPlayed2) {
+		this.playerGamesPlayed2 = playerGamesPlayed2;
 	}
 }

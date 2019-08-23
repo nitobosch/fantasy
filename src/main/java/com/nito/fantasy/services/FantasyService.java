@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +104,7 @@ public class FantasyService {
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
 		RestTemplate restTemplate = new RestTemplate();
-		String url = "https://api.laligafantasymarca.com/api/v3/player/" + playerId ;
+		String url = "https://api.laligafantasymarca.com/api/v3/player/" + playerId;
 		logger.info(url);
 		ResponseEntity<FantasyPlayer> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(headers),
 				new ParameterizedTypeReference<FantasyPlayer>() {
@@ -224,34 +223,36 @@ public class FantasyService {
 		return players;
 	}
 
-	public List<Player> convertToDtoFromLeaguePlayersDB(List<FantasyLeaguePlayerDB> fantasyLeaguePlayersDB) {
+	public List<Player> convertToDtoFromLeaguePlayersDB(List<FantasyPlayerDB> fantasyPlayersDB,
+			List<FantasyLeaguePlayerDB> fantasyLeaguePlayersDB) {
 		List<Player> players = new ArrayList<Player>();
 		for (FantasyLeaguePlayerDB leaguePlayerDB : fantasyLeaguePlayersDB) {
-			logger.info("leaguePlayerDB.getPlayerId():"+leaguePlayerDB.getPlayerId());
+			logger.info("leaguePlayerDB.getPlayerId():" + leaguePlayerDB.getPlayerId());
 			Player newPlayer = new Player();
 			FantasyPlayer fantasyPlayer = new FantasyPlayer();
 			FantasyPlayerDB fantasyPlayerDB = new FantasyPlayerDB();
 			try {
-				fantasyPlayerDB = fantasyPlayerDBRepository.findById(leaguePlayerDB.getPlayerId()).orElse(null);
-			}catch (Exception e){
+				// fantasyPlayerDB = fantasyPlayerDBRepository.findById(leaguePlayerDB.getPlayerId()).orElse(null);
+				fantasyPlayerDB = fantasyPlayersDB.stream().filter(n -> n.getId().equals(leaguePlayerDB.getPlayerId())).findAny()
+						.orElse(null);
+			} catch (Exception e) {
 				fantasyPlayerDB = null;
 			}
 			if (fantasyPlayerDB == null) {
 				fantasyPlayer = getPlayer(leaguePlayerDB.getPlayerId());
-				logger.error("Player no encontrado en DB: "+fantasyPlayer.getNickname()+"("+leaguePlayerDB.getPlayerId()+")");
+				logger.error(
+						"Player no encontrado en DB: " + fantasyPlayer.getNickname() + "(" + leaguePlayerDB.getPlayerId() + ")");
 				fantasyPlayerDB = fantasyPlayer.convertToEntityDB();
 				updateFantasyPlayerDB(fantasyPlayerDB, fantasyPlayer);
-				newPlayer = fantasyPlayerDB.convertToDto();
-			}else {
-				newPlayer = fantasyPlayerDBRepository.findById(leaguePlayerDB.getPlayerId()).get().convertToDto();
 			}
+			newPlayer = fantasyPlayerDB.convertToDto();
 			newPlayer.setManagerName(Formatter.parseNull(leaguePlayerDB.getManagerName()));
 			newPlayer.setTeamId(leaguePlayerDB.getTeamId());
 			newPlayer.setPlayerBuyoutClause(leaguePlayerDB.getPlayerBuyoutClause());
 			newPlayer.setPlayerEndBuyoutClause(leaguePlayerDB.getPlayerEndBuyoutClause());
 			newPlayer.setUpDownBuyoutClause();
-			newPlayer.setUpDownPurchaseDate(leaguePlayerDB.getPlayerPurchaseDate(), 
-					leaguePlayerDB.getPlayerPurchaseAmount(), leaguePlayerDB.getPlayerMarketValuePurchaseDate());
+			newPlayer.setUpDownPurchaseDate(leaguePlayerDB.getPlayerPurchaseDate(), leaguePlayerDB.getPlayerPurchaseAmount(),
+					leaguePlayerDB.getPlayerMarketValuePurchaseDate());
 			players.add(newPlayer);
 		}
 		return players;
@@ -288,6 +289,7 @@ public class FantasyService {
 
 		clearFantasyLeaguePlayersFromDB(leagueId);
 		List<FantasyLeaguePlayerDB> new_playersDB = new ArrayList<>();
+		List<FantasyPlayerMarket> playerMarket = new ArrayList<>();
 		List<FantasyNewDB> playersNewsDB = getFantasyNewsFromDB(leagueId);
 
 		List<FantasyRanking> fantasyRanking = getRankingFantasy(authToken, leagueId);
@@ -302,23 +304,26 @@ public class FantasyService {
 				newPlayer.setTeamId(team.getId());
 				newPlayer.setPlayerBuyoutClause(player.getBuyoutClause());
 				newPlayer.setPlayerEndBuyoutClause(player.getBuyoutClauseLockedEndTime());
-				List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(player.getPlayerMaster().getId());
+
+				FantasyNewDB playerPurchase = playersNewsDB.stream().filter(p -> "purchase".equals(p.getOperation()))
+						.filter(p -> player.getPlayerMaster().getNickname().equals(p.getPlayerName()))
+						.filter(p -> leagueId.equals(p.getLeagueId())).filter(p -> p.getDate() != null)
+						.sorted(Comparator.comparing(FantasyNewDB::getDate).reversed()).findFirst().orElse(null);
+				if (playerPurchase != null) {
+					newPlayer.setPlayerPurchaseDate(playerPurchase.getDate());
+					newPlayer.setPlayerPurchaseAmount(playerPurchase.getMoney());
+				}
+
+				// playerMarket = getPlayerMarketFantasy(player.getPlayerMaster().getId());
 
 				if (playerMarket != null && playerMarket.size() > 0) {
-
-					FantasyNewDB playerPurchase = playersNewsDB.stream().filter(p -> "purchase".equals(p.getOperation()))
-							.filter(p -> player.getPlayerMaster().getNickname().equals(p.getPlayerName()))
-							.filter(p -> leagueId.equals(p.getLeagueId())).filter(p -> p.getDate() != null)
-							.sorted(Comparator.comparing(FantasyNewDB::getDate).reversed()).findFirst().orElse(null);
 
 					if (playerPurchase != null) {
 						Integer marketValuePurchaseDate = playerMarket.stream()
 								.filter(p -> p.getDate().getYear() == playerPurchase.getDate().getYear()
 										&& p.getDate().getDayOfYear() == playerPurchase.getDate().getDayOfYear())
 								.findAny().orElse(null).getMarketValue();
-						newPlayer.setPlayerPurchaseDate(playerPurchase.getDate());
 						newPlayer.setPlayerMarketValuePurchaseDate(marketValuePurchaseDate);
-						newPlayer.setPlayerPurchaseAmount(playerPurchase.getMoney());
 					}
 				}
 				new_playersDB.add(newPlayer);
@@ -487,6 +492,7 @@ public class FantasyService {
 
 	public void updateFantasyPlayerDB(FantasyPlayerDB fantasyPlayerDB, FantasyPlayer fantasyPlayer) {
 		Integer gamesPlayed = null;
+		Integer gamesPlayed2 = null;
 		Integer minutesPlayed = null;
 		fantasyPlayerDB.setPlayerName(fantasyPlayer.getNickname());
 		fantasyPlayerDB.setPlayerImage(fantasyPlayer.getImages().getTransparent().get64x64());
@@ -499,17 +505,23 @@ public class FantasyService {
 		if (fantasyPlayer.getPlayerStats() != null && fantasyPlayer.getPlayerStats().size() > 0) {
 			gamesPlayed = fantasyPlayer.getPlayerStats().stream().filter(o -> o.getStats().getMinsPlayed().get(0) > 0)
 					.mapToInt(o -> 1).sum();
+			gamesPlayed2 = fantasyPlayer.getPlayerStats().stream().filter(o -> o.getStats().getMinsPlayed().get(0) > 40)
+					.mapToInt(o -> 1).sum();
 			minutesPlayed = fantasyPlayer.getPlayerStats().stream().filter(o -> o.getStats().getMinsPlayed().get(0) > 0)
 					.mapToInt(o -> o.getStats().getMinsPlayed().get(0)).sum();
 			fantasyPlayerDB.setPlayerGamesPlayed(gamesPlayed);
+			fantasyPlayerDB.setPlayerGamesPlayed2(gamesPlayed2);
 			fantasyPlayerDB.setPlayerMinutesPlayed(minutesPlayed);
 		}
 
 		List<FantasyPlayerMarket> playerMarket = getPlayerMarketFantasy(fantasyPlayer.getId());
 		if (playerMarket != null && playerMarket.size() > 0) {
 			fantasyPlayerDB.setPlayerMarketValue(playerMarket.get(playerMarket.size() - 1).getMarketValue());
+			if (playerMarket.size() > 3) {
+				fantasyPlayerDB.setPlayerMarketValueYesterday2(playerMarket.get(playerMarket.size() - 4).getMarketValue());
+			}
 			if (playerMarket.size() > 2) {
-				fantasyPlayerDB.setPlayerMarketValueYesterday2(playerMarket.get(playerMarket.size() - 3).getMarketValue());
+				fantasyPlayerDB.setPlayerMarketValueYesterday1(playerMarket.get(playerMarket.size() - 3).getMarketValue());
 			}
 			if (playerMarket.size() > 1) {
 				fantasyPlayerDB.setPlayerMarketValueYesterday(playerMarket.get(playerMarket.size() - 2).getMarketValue());

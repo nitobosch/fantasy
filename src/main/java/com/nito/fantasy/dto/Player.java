@@ -23,15 +23,21 @@ public class Player {
 
 	private Double playerAveragePointsGame;
 
+	private Double playerAveragePointsGame2;
+
 	private Double playerAveragePointsMinutes;
 
 	private Double playerAveragePointsMinutesGame;
+
+	private Double playerAverageMinutesGame;
 
 	private Integer playerPointsAA;
 
 	private Integer playerValue;
 
 	private Integer playerGamesPlayed;
+
+	private Integer playerGamesPlayed2;
 
 	private Integer playerMinutesPlayed;
 
@@ -56,6 +62,10 @@ public class Player {
 	private Integer playerMarketValueYesterday;
 
 	private Integer diffMarketValuefromYesterday;
+
+	private Integer playerMarketValueYesterday1;
+
+	private Integer diffMarketValuefromYesterday1;
 
 	private Integer playerMarketValueYesterday2;
 
@@ -210,16 +220,25 @@ public class Player {
 		setDiffMarketValuefromBuyoutClause(diffValor);
 	}
 
-	public void setUpDownYesterday(Integer valueAyer, Integer valueAnteayer) {
+	public void setUpDownYesterday(Integer valueAyer, Integer valueAyer1, Integer valueAyer2) {
 
-		Integer diffValor = this.playerValue - valueAyer;
-		setPlayerMarketValueYesterday(valueAyer);
-		setDiffMarketValuefromYesterday(diffValor);
+		Integer diffValor = null;
+		if (valueAyer != null) {
+			diffValor = this.playerValue - valueAyer;
+			setPlayerMarketValueYesterday(valueAyer);
+			setDiffMarketValuefromYesterday(diffValor);
 
-		if (valueAnteayer != null) {
-			diffValor = valueAyer - valueAnteayer;
-			setPlayerMarketValueYesterday2(valueAnteayer);
-			setDiffMarketValuefromYesterday2(diffValor);
+			if (valueAyer1 != null) {
+				diffValor = valueAyer - valueAyer1;
+				setPlayerMarketValueYesterday1(valueAyer1);
+				setDiffMarketValuefromYesterday1(diffValor);
+
+				if (valueAyer2 != null) {
+					diffValor = valueAyer1 - valueAyer2;
+					setPlayerMarketValueYesterday2(valueAyer2);
+					setDiffMarketValuefromYesterday2(diffValor);
+				}
+			}
 		}
 	}
 
@@ -229,13 +248,17 @@ public class Player {
 		if (purchaseDate != null) {
 			setPlayerPurchaseDate(purchaseDate);
 			// valor compra
-			setPlayerPurchaseAmount(purchaseAmount);
-			diffValor = this.playerValue - purchaseAmount;
-			setDiffMarketValuefromPurchaseAmount(diffValor);
+			if (purchaseAmount != null) {
+				setPlayerPurchaseAmount(purchaseAmount);
+				diffValor = this.playerValue - purchaseAmount;
+				setDiffMarketValuefromPurchaseAmount(diffValor);
+			}
 			// valor mercado
-			setPlayerMarketValuePurchaseDate(marketValue);
-			diffValor = this.playerValue - marketValue;
-			setDiffMarketValuefromPurchaseDate(diffValor);
+			if (marketValue != null) {
+				setPlayerMarketValuePurchaseDate(marketValue);
+				diffValor = this.playerValue - marketValue;
+				setDiffMarketValuefromPurchaseDate(diffValor);
+			}
 		}
 	}
 
@@ -393,6 +416,62 @@ public class Player {
 
 	public void setPlayerPositionId(Integer playerPositionId) {
 		this.playerPositionId = playerPositionId;
+	}
+
+	public Integer getPlayerMarketValueYesterday1() {
+		return playerMarketValueYesterday1;
+	}
+
+	public void setPlayerMarketValueYesterday1(Integer playerMarketValueYesterday1) {
+		this.playerMarketValueYesterday1 = playerMarketValueYesterday1;
+	}
+
+	public Integer getDiffMarketValuefromYesterday1() {
+		return diffMarketValuefromYesterday1;
+	}
+
+	public void setDiffMarketValuefromYesterday1(Integer diffMarketValuefromYesterday1) {
+		this.diffMarketValuefromYesterday1 = diffMarketValuefromYesterday1;
+	}
+
+	public Integer getPlayerGamesPlayed2() {
+		return playerGamesPlayed2;
+	}
+
+	public void setPlayerGamesPlayed2(Integer playerGamesPlayed2) {
+		this.playerGamesPlayed2 = playerGamesPlayed2;
+	}
+
+	public Double getPlayerAveragePointsGame2() {
+		return playerAveragePointsGame2;
+	}
+
+	public void setPlayerAveragePointsGame2(Double playerAveragePointsGame2) {
+		this.playerAveragePointsGame2 = playerAveragePointsGame2;
+	}
+
+	public void setPlayerAveragePointsGame2() {
+		Double aux = null;
+		if (this.playerGamesPlayed2 != null && this.playerGamesPlayed2 > 0) {
+			aux = (double) this.playerPoints / (double) this.playerGamesPlayed2;
+		}
+		this.playerAveragePointsGame2 = aux;
+	}
+
+	public Double getPlayerAverageMinutesGame() {
+		return playerAverageMinutesGame;
+	}
+
+	public void setPlayerAverageMinutesGame(Double playerAverageMinutesGame) {
+		this.playerAverageMinutesGame = playerAverageMinutesGame;
+	}
+
+	public void setPlayerAverageMinutesGame() {
+		Double aux = null;
+		if (this.playerMinutesPlayed != null && this.playerGamesPlayed > 0) {
+			aux = (double) this.playerMinutesPlayed / (double) this.playerGamesPlayed;
+		}
+		this.playerAverageMinutesGame = aux;
 	}
 
 }

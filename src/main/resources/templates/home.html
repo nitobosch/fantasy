@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap-table@1.15.3/dist/extensions/filter-control/bootstrap-table-filter-control.css">
 	<style type="text/css">
+		html {
+		    zoom: 80%;
+		}
 		.row+.row {
 		    margin-top: 1rem;
 		}
@@ -99,7 +102,7 @@
 			    </div>
 		    </div>
 	    </div>
-	    <div id="div-market" style="display:none; margin-right: 25rem; margin-left: 25rem;">
+	    <div id="div-market" style="display:none; margin-right: 20rem; margin-left: 20rem;">
 			<div class="row">
 			    <div class="col">
 					<table id="table-market">
@@ -110,13 +113,16 @@
 					      <th data-field="playerPoints" data-sortable="true">Puntos</th>
 					      <th data-field="playerPointsAA" data-sortable="true">Puntos AA</th>
 					      <th data-field="playerGamesPlayed" data-sortable="true">Partidos</th>
-					      <th data-field="playerMinutesPlayed" data-sortable="true">Minutos</th>
+					      <th data-field="playerGamesPlayed2" data-sortable="true">Partidos*</th>
+					      <th data-field="playerAverageMinutesGame" data-sortable="true" data-formatter="numberFormatter0Dec">min/par</th>
 					      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
-					      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido</th>
+					      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/par</th>
+					      <th data-field="playerAveragePointsGame2" data-sortable="true" data-formatter="numberFormatter2Dec">pts/par*</th>
 <!-- 					      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th> -->
 					      <th data-field="playerValue" data-sortable="true" data-formatter="numberFormatter" class="col-value" data-cell-style="cellStyleValue">Valor</th>
 					      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter" class="col-yesterday" data-cell-style="cellStyleDifYesterday">Dif. Ayer</th>
-					      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">Dif. AnteAyer</th>
+					      <th data-field="diffMarketValuefromYesterday1" data-sortable="true" data-formatter="numberFormatter">Dif. Ayer-1</th>
+					      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">Dif. Ayer-2</th>
 					      <th data-field="playerNumBids" data-sortable="true">Pujas</th>
 					    </tr>
 					  </thead>
@@ -124,47 +130,65 @@
 			    </div>
 		    </div>
 	    </div>
-	    <div id="div-ranking" class="container" style="display:none;">
+	    <div id="div-ranking" style="display:none; margin-right: 20rem; margin-left: 20rem;">
 			<div class="row">
 			    <div class="col">
-					<table id="table-ranking">
+					<div class="row">
+					    <div class="col">
+							<table id="table-ranking">
+							  <thead>
+							    <tr>
+							      <th data-field="state" data-checkbox="true"></th>
+							      <th data-field="position" data-sortable="true">#</th>
+							      <th data-field="managerName" data-sortable="true">Manager</th>
+							      <th data-field="teamPoints" data-sortable="true">Puntos</th>
+							      <th data-field="teamValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
+							      <th data-field="teamMoneyAprox" data-sortable="true" data-formatter="numberFormatter">Dinero (aprox.)</th>
+							      <th data-field="teamMoneyAvailable" data-sortable="true" data-formatter="numberFormatter">Dinero disponible (aprox.)</th>
+							    </tr>
+							  </thead>
+							</table>
+					    </div>
+				    </div>
+					<div class="row">
+					    <div class="col">
+							<form id="form-ranking">
+								<div class="form-group">
+								  <label for="exampleInputEmail1">Diferencia entre Valor de Mercado y Cláusula (en Millones)</label>
+								 	<input type="number" class="form-control" id="diffValueBuyoutClause" name="diffValueBuyoutClause" placeholder="Enter difference" autocomplete="off">
+								</div>
+								<div class="form-group">
+								  <label for="exampleInputEmail1">Días para fin de cláusula</label>
+								 	<input type="number" class="form-control" id="chkDaysBuyoutClause" name="daysBuyoutClause" placeholder="Enter days" autocomplete="off">
+								</div>
+								<input type="hidden" id="form-ranking-league" name="league">
+								<div class="btn-group dropright">
+									<button type="submit" class="btn btn-success">Show Players</button>
+								  	<button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+								    	<span class="sr-only"></span>
+								  	</button>
+								  	<ul class="dropdown-menu" role="menu">
+		<!-- 									    	<li><a id="btn-updatedb" class="dropdown-item" href="#">Update</a></li> -->
+								    	<li><a id="btn-allplayers" class="dropdown-item" href="#">All players</a></li>
+								  	</ul>
+								</div>
+							</form>
+					    </div>
+				    </div>
+			    </div>
+			    <div id="div-news" class="col" style="display:none;">
+					<table id="table-news">
 					  <thead>
 					    <tr>
-					      <th data-field="state" data-checkbox="true"></th>
-					      <th data-field="position" data-sortable="true">#</th>
-					      <th data-field="managerName" data-sortable="true">Manager</th>
-					      <th data-field="teamPoints" data-sortable="true">Puntos</th>
-					      <th data-field="teamValue" data-sortable="true" data-formatter="numberFormatter">Valor</th>
-					      <th data-field="teamMoneyAprox" data-sortable="true" data-formatter="numberFormatter">Dinero (aprox.)</th>
-					      <th data-field="teamMoneyAvailable" data-sortable="true" data-formatter="numberFormatter">Dinero disponible (aprox.)</th>
+					      <th data-field="date" data-sortable="true" data-formatter="dateFormatter">Fecha</th>
+					      <th data-field="managerName" data-sortable="true" data-filter-control="select">Manager</th>
+					      <th data-field="operation" data-sortable="true" data-halign="center" data-align="center" data-filter-control="select" data-formatter="operationFormatter">Tipo</th>
+					      <th data-field="partnerName" data-sortable="true" data-filter-control="select">Partner</th>
+					      <th data-field="playerName" data-sortable="true" data-formatter="numberFormatter" data-filter-control="input">Jugador</th>
+					      <th data-field="money" data-sortable="true" data-formatter="numberFormatter">Dinero</th>
 					    </tr>
 					  </thead>
 					</table>
-			    </div>
-		    </div>
-			<div class="row">
-			    <div class="col">
-					<form id="form-ranking">
-						<div class="form-group">
-						  <label for="exampleInputEmail1">Diferencia entre Valor de Mercado y Cláusula (en Millones)</label>
-						 	<input type="number" class="form-control" id="diffValueBuyoutClause" name="diffValueBuyoutClause" placeholder="Enter difference" autocomplete="off">
-						</div>
-						<div class="form-group">
-						  <label for="exampleInputEmail1">Días para fin de cláusula</label>
-						 	<input type="number" class="form-control" id="chkDaysBuyoutClause" name="daysBuyoutClause" placeholder="Enter days" autocomplete="off">
-						</div>
-						<input type="hidden" id="form-ranking-league" name="league">
-						<div class="btn-group dropright">
-							<button type="submit" class="btn btn-success">Show Players</button>
-						  	<button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
-						    	<span class="sr-only"></span>
-						  	</button>
-						  	<ul class="dropdown-menu" role="menu">
-<!-- 									    	<li><a id="btn-updatedb" class="dropdown-item" href="#">Update</a></li> -->
-						    	<li><a id="btn-allplayers" class="dropdown-item" href="#">All players</a></li>
-						  	</ul>
-						</div>
-					</form>
 			    </div>
 		    </div>
 			<div class="row">
@@ -189,7 +213,7 @@
 						      <th rowspan="2" data-formatter="playerFormatter" data-field="playerName" data-sortable="true" data-filter-control="input">Jugador</th>
 						      <th rowspan="2" data-field="playerPositionName" data-formatter="positionFormatter" data-sortable="true" data-sort-name="playerPositionId" data-filter-control="select">Posición</th>
 						      <th rowspan="2" data-field="playerValue" data-sortable="true" data-formatter="numberFormatter" class="col-value" data-cell-style="cellStyleValue">Valor</th>
-						      <th colspan="6" data-halign="center">Datos</th>
+						      <th colspan="8" data-halign="center">Datos</th>
 						      <th colspan="3" data-halign="center">Cláusula</th>
 						      <th colspan="3" data-halign="center">Dif. Valor Mercado vs ...</th>
 						      <th colspan="3" data-halign="center">Compra</th>
@@ -199,20 +223,23 @@
 						      <th data-field="playerPoints" data-sortable="true">Puntos</th>
 						      <th data-field="playerPointsAA" data-sortable="true">A.A.</th>
 						      <th data-field="playerGamesPlayed" data-sortable="true">Partidos</th>
-						      <th data-field="playerMinutesPlayed" data-sortable="true">Minutos</th>
+						      <th data-field="playerGamesPlayed2" data-sortable="true">Partidos*</th>
+					      	  <th data-field="playerAverageMinutesGame" data-sortable="true" data-formatter="numberFormatter0Dec">min/par</th>
 						      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
-						      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido</th>
+						      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/par</th>
+						      <th data-field="playerAveragePointsGame2" data-sortable="true" data-formatter="numberFormatter2Dec">pts/par*</th>
 <!-- 						      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th> -->
 		<!-- Campos Cláusula -->
 						      <th data-field="playerBuyoutClause" data-sortable="true" data-formatter="numberFormatter">Total</th>
 						      <th data-field="diffMarketValuefromBuyoutClause" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
-						      <th data-field="playerEndBuyoutClause" data-sortable="true" data-formatter="dateFormatter">Fecha Fin</th>
+						      <th data-field="playerEndBuyoutClause" data-sortable="true" data-formatter="dateFormatter" data-width="150">Fecha Fin</th>
 		<!-- Campos vs -->
 						      <th data-field="diffMarketValuefromYesterday" data-sortable="true" data-formatter="numberFormatter" class="col-yesterday" data-cell-style="cellStyleDifYesterday">Ayer</th>
-						      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">AnteAyer</th>
-						      <th data-field="diffMarketValuefromPurchaseDate" data-sortable="true" data-formatter="numberFormatter">F. Compra</th>
+						      <th data-field="diffMarketValuefromYesterday1" data-sortable="true" data-formatter="numberFormatter">Ayer-1</th>
+						      <th data-field="diffMarketValuefromYesterday2" data-sortable="true" data-formatter="numberFormatter">Ayer-2</th>
+<!-- 						      <th data-field="diffMarketValuefromPurchaseDate" data-sortable="true" data-formatter="numberFormatter">F. Compra</th> -->
 		<!-- Campos Compra -->
-						      <th data-field="playerPurchaseDate" data-sortable="true" data-formatter="dateFormatter">Fecha</th>
+						      <th data-field="playerPurchaseDate" data-sortable="true" data-formatter="dateFormatter" data-width="150">Fecha</th>
 						      <th data-field="playerPurchaseAmount" data-sortable="true" data-formatter="numberFormatter">Importe</th>
 						      <th data-field="diffMarketValuefromPurchaseAmount" data-sortable="true" data-formatter="numberFormatter">Dif.</th>
 						    </tr>
@@ -242,9 +269,34 @@
   	function positionFormatter(value, row) {
   		return '<div class="row"><div class="col text-center"><span class="position player-'+ row.playerPositionId + '"> '+ row.playerPositionName + '</span></div></div>';
 	}
+  	function operationFormatter(value, row) {
+  		var aux = value;
+  		if (value == "sale"){
+  	  		aux = '<img height="19px" src="/resources/images/arrow-green-32-24.png"></img>';	
+  		}else if (value == "purchase"){
+  	  		aux = '<img height="19px" src="/resources/images/arrow-red-97-24.png"></img>';
+  	  		if (row.partnerName != "LaLiga"){
+  	  			aux = aux + '&nbsp;<img height="19px" src="/resources/images/money.png"></img>'
+  	  		}
+  		}
+  		return aux;
+	}
+  	function partnerFormatter(value, row) {
+  		var aux = value;
+  		if (value == "LaLiga"){
+  	  		aux = '<img height="19px" src="/resources/images/laliga-logo.png"></img>';	
+  		}
+  		return aux;
+	}
   	function numberFormatter(value, row) {
   		if (value != null) {
     		return value.toLocaleString();
+  		}	
+	}
+  	function numberFormatter0Dec(value, row) {
+  		if (value != null) {
+  			var aux = Math.round(value);
+    		return aux.toLocaleString();
   		}	
 	}
   	function numberFormatter2Dec(value, row) {
@@ -291,10 +343,12 @@
   	  	var $tableranking = $("#table-ranking");
   	  	var $tableplayers = $("#table-players");
   	  	var $tablemarket = $("#table-market");
+  	  	var $tablenews = $("#table-news");
   	  	var $divleagues = $("#div-leagues");
   	  	var $divranking = $("#div-ranking");
   	  	var $divplayers = $("#div-players");
   	  	var $divmarket = $("#div-market");
+  	  	var $divnews = $("#div-news");
   	  	var $spinner1 = $("#spinner1");
   	  	var $spinner2 = $("#spinner2");
   	  	var $error1 = $("#error1");
@@ -310,6 +364,16 @@
 //   	 	   showMultiSortButton: true,
   	 	   sortName: "position",
   	 	   sortOrder: "asc"
+  	 	   });
+  	  	
+  	    $tablenews.bootstrapTable({
+  	 	   sorting: true,
+  	 	   pagination: true,
+  	 	   showExtendedPagination: true,
+  	 	   filterControl: true,
+  	 	   sortName: "date",
+  	 	   sortOrder: "desc",
+  	 	   pageSize: 15
   	 	   });
   	    $tablemarket.bootstrapTable({
    	 	   sorting: true,
@@ -418,12 +482,29 @@
   		             		 scrollTop: $divranking.offset().top
   		             		 }, 1000);
   		             	$("#form-ranking-league").val(id);
+  		             	getNews(id);
   		           	},
   	  		         error: function(jqXHR, textStatus, errorThrown){
   	  		        	$error1text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
   	  	  		  		$spinner1.hide();
   	  		        	$error1.show();
   	  		        	}	
+  		         });
+  	    }
+  	    function getNews(id){
+  		  	$divnews.hide();
+  		    $.ajax({
+  		           type: "GET",
+  		           url: "/fantasyJson/news",
+  		           data: "league="+id,
+  		           success: function(data)
+  		           {
+  		               $tablenews.bootstrapTable("refreshOptions",{
+  		            	   data: data,
+  		        	 	   sortName: 'date',
+  		        	 	   sortOrder: 'desc'});
+  		             	$divnews.show();
+  		           	}
   		         });
   	    }
   	    function getMarket(id){

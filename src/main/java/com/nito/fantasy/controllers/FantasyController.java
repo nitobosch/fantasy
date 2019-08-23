@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.nito.fantasy.dto.League;
+import com.nito.fantasy.dto.New;
 import com.nito.fantasy.dto.Player;
 import com.nito.fantasy.dto.Ranking;
 import com.nito.fantasy.model.dynamodb.FantasyNewDB;
 import com.nito.fantasy.model.dynamodb.FantasyPlayerDB;
-import com.nito.fantasy.model.dynamodb.FantasyPlayerHistoryDB;
 import com.nito.fantasy.model.marca.FantasyLeague;
 import com.nito.fantasy.model.marca.FantasyMarket;
 import com.nito.fantasy.model.marca.FantasyRanking;
@@ -80,6 +80,13 @@ public class FantasyController {
 		return fantasyService.convertToDtoRanking(league, fantasyRanking);
 	}
 
+	@RequestMapping(value = "/fantasyJson/news", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<New> fantasyNews(@RequestParam(name = "league", required = true) String league) {
+		List<FantasyNewDB> fantasyNewsDB = fantasyService.getFantasyNewsFromDB(league);
+		return fantasyNewsDB.stream().map(n -> n.convertToDto()).collect(Collectors.toList());
+	}
+
 	@RequestMapping(value = "/fantasyJson/players", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
 	public List<Player> fantasyLeaguePlayers(@RequestParam(name = "token", required = false) String token,
@@ -101,18 +108,20 @@ public class FantasyController {
 		List<Player> leaguePlayers = new ArrayList<>();
 		List<String> leaguePlayersId = new ArrayList<>();
 		List<Player> allPlayers = new ArrayList<>();
+		List<FantasyPlayerDB> allPlayersDB = new ArrayList<>();
 		List<Player> players = new ArrayList<>();
 		if ("on".equals(updatedb)) {
 			fantasyService.updatePlayersFromDB();
 			fantasyService.updateFantasyLeaguePlayersFromDB(token, league);
 		}
-		leaguePlayers = fantasyService.convertToDtoFromLeaguePlayersDB(fantasyService.getFantasyLeaguePlayersFromDB(league));
+		allPlayersDB = fantasyService.getFantasyPlayersFromDB();
+		logger.info("allPlayers.size():" + allPlayers.size());
+		leaguePlayers = fantasyService.convertToDtoFromLeaguePlayersDB(allPlayersDB,
+				fantasyService.getFantasyLeaguePlayersFromDB(league));
 		leaguePlayersId = leaguePlayers.stream().map(n -> n.getPlayerId()).collect(Collectors.toList());
 		logger.info("leaguePlayers.size():" + leaguePlayers.size());
 		if ("on".equals(allplayers)) {
-			allPlayers = fantasyService.getFantasyPlayersFromDB().stream().map(n -> n.convertToDto())
-					.collect(Collectors.toList());
-			logger.info("allPlayers.size():" + allPlayers.size());
+			allPlayers = allPlayersDB.stream().map(n -> n.convertToDto()).collect(Collectors.toList());
 		}
 		players.addAll(leaguePlayers);
 		logger.info("1-players.size():" + players.size());
