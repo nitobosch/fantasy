@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
+    <title>Fantasy</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="icon" type="image/png" href="/images/logo-fantasy-marca-1.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
@@ -115,7 +116,7 @@
 					      <th data-field="playerGamesPlayed" data-sortable="true">Partidos</th>
 					      <th data-field="playerGamesPlayed2" data-sortable="true">Partidos*</th>
 					      <th data-field="playerAverageMinutesGame" data-sortable="true" data-formatter="numberFormatter0Dec">min/par</th>
-					      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
+<!-- 					      <th data-field="playerAveragePoints" data-sortable="true">Media</th> -->
 					      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/par</th>
 					      <th data-field="playerAveragePointsGame2" data-sortable="true" data-formatter="numberFormatter2Dec">pts/par*</th>
 <!-- 					      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th> -->
@@ -225,7 +226,7 @@
 						      <th data-field="playerGamesPlayed" data-sortable="true">Partidos</th>
 						      <th data-field="playerGamesPlayed2" data-sortable="true">Partidos*</th>
 					      	  <th data-field="playerAverageMinutesGame" data-sortable="true" data-formatter="numberFormatter0Dec">min/par</th>
-						      <th data-field="playerAveragePoints" data-sortable="true">Media</th>
+<!-- 						      <th data-field="playerAveragePoints" data-sortable="true">Media</th> -->
 						      <th data-field="playerAveragePointsGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/par</th>
 						      <th data-field="playerAveragePointsGame2" data-sortable="true" data-formatter="numberFormatter2Dec">pts/par*</th>
 <!-- 						      <th data-field="playerAveragePointsMinutesGame" data-sortable="true" data-formatter="numberFormatter2Dec">pts/partido*</th> -->
@@ -272,11 +273,11 @@
   	function operationFormatter(value, row) {
   		var aux = value;
   		if (value == "sale"){
-  	  		aux = '<img height="19px" src="/resources/images/arrow-green-32-24.png"></img>';	
+  	  		aux = '<img height="19px" src="/images/arrow-green-32-24.png"></img>';	
   		}else if (value == "purchase"){
-  	  		aux = '<img height="19px" src="/resources/images/arrow-red-97-24.png"></img>';
+  	  		aux = '<img height="19px" src="/images/arrow-red-97-24.png"></img>';
   	  		if (row.partnerName != "LaLiga"){
-  	  			aux = aux + '&nbsp;<img height="19px" src="/resources/images/money.png"></img>'
+  	  			aux = aux + '&nbsp;<img height="19px" src="/images/money.png"></img>'
   	  		}
   		}
   		return aux;
@@ -284,7 +285,7 @@
   	function partnerFormatter(value, row) {
   		var aux = value;
   		if (value == "LaLiga"){
-  	  		aux = '<img height="19px" src="/resources/images/laliga-logo.png"></img>';	
+  	  		aux = '<img height="19px" src="/images/laliga-logo.png"></img>';	
   		}
   		return aux;
 	}
@@ -425,7 +426,7 @@
   		        	            	      	href: "#",
   		        	            	      	class: "dropdown-item",
   		        	            	        click: function () { 
-  		        	            	        		getMarket(item.leagueId);
+  		        	            	        		getMarket(item.leagueId, item.leagueName);
   		        	            	        	}
   		        	            	    });
 									var li_ranking = $('<li>');
@@ -435,7 +436,7 @@
   	  		        	            	      	href: "#",
   	  		        	            	      	class: "dropdown-item",
   	  		        	            	        click: function () { 
-  	  		        	            	        		getRanking(item.leagueId);
+  	  		        	            	        		getRanking(item.leagueId, item.leagueName);
   	  		        	            	        	}
   	  		        	            	    });
   		        	            	li_market.append(a_market);
@@ -450,6 +451,7 @@
         	            	$divleagues.append(button_group1);
         	     		  	$spinner1.hide();
   		             		$divleagues.show();
+  		             		document.title = "Fantasy";
   		        	},
   		         error: function(jqXHR, textStatus, errorThrown){
   		        	$error1text.html(jqXHR.responseJSON.status + ": " + jqXHR.responseJSON.error + " - " + jqXHR.responseJSON.message);
@@ -458,7 +460,7 @@
   		        	}	
   		         });
   	    }
-  	    function getRanking(id){
+  	    function getRanking(id, name){
  		  	$error1.hide();
  		  	$error2.hide();
   		  	$divmarket.hide();
@@ -478,6 +480,7 @@
   		        	 	   sortOrder: 'asc'});
  		    		  	$spinner1.hide();
   		             	$divranking.show();
+		             	document.title = "Fantasy - " + name + " - Ranking";
   		             	 $('html, body').animate({
   		             		 scrollTop: $divranking.offset().top
   		             		 }, 1000);
@@ -507,7 +510,7 @@
   		           	}
   		         });
   	    }
-  	    function getMarket(id){
+  	    function getMarket(id, name){
  		  	$error1.hide();
  		  	$error2.hide();
   		  	$divmarket.hide();
@@ -527,6 +530,7 @@
   		         	 	   sortOrder: 'desc'});
  		    		  	$spinner1.hide();
   		             	$divmarket.show();
+		             	document.title = "Fantasy - " + name + " - Market";
   		             	 $('html, body').animate({
   		             		 scrollTop: $divmarket.offset().top
   		             		 }, 1000);
