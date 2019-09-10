@@ -246,6 +246,7 @@ public class FantasyService {
 				updateFantasyPlayerDB(fantasyPlayerDB, fantasyPlayer);
 			}
 			newPlayer = fantasyPlayerDB.convertToDto();
+			newPlayer.setPlayerTeamId(leaguePlayerDB.getId());
 			newPlayer.setManagerName(Formatter.parseNull(leaguePlayerDB.getManagerName()));
 			newPlayer.setTeamId(leaguePlayerDB.getTeamId());
 			newPlayer.setPlayerBuyoutClause(leaguePlayerDB.getPlayerBuyoutClause());
@@ -298,6 +299,7 @@ public class FantasyService {
 			FantasyTeam team = getTeamFantasy(authToken, leagueId, rankingObj.getTeam().getId());
 			for (com.nito.fantasy.model.marca.Player player : team.getPlayers()) {
 				FantasyLeaguePlayerDB newPlayer = new FantasyLeaguePlayerDB();
+				newPlayer.setId(player.getPlayerTeamId());
 				newPlayer.setLeagueId(leagueId);
 				newPlayer.setPlayerId(player.getPlayerMaster().getId());
 				newPlayer.setManagerName(team.getManager().getManagerName());

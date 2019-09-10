@@ -128,6 +128,7 @@ public class FantasyPlayerDB {
 	public Player convertToDto() {
 		Player newPlayer = new Player();
 		newPlayer.setPlayerId(this.id);
+		newPlayer.setPlayerTeamId("-");
 		newPlayer.setManagerName("-");
 		newPlayer.setPlayerName(this.playerName);
 		newPlayer.setPlayerPoints(this.playerPoints);

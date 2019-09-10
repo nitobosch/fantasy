@@ -11,6 +11,8 @@ public class Player {
 
 	private String playerId;
 
+	private String playerTeamId;
+
 	private String playerName;
 
 	private String managerName;
@@ -472,6 +474,14 @@ public class Player {
 			aux = (double) this.playerMinutesPlayed / (double) this.playerGamesPlayed;
 		}
 		this.playerAverageMinutesGame = aux;
+	}
+
+	public String getPlayerTeamId() {
+		return playerTeamId;
+	}
+
+	public void setPlayerTeamId(String playerTeamId) {
+		this.playerTeamId = playerTeamId;
 	}
 
 }

@@ -265,7 +265,11 @@
     <script src="https://momentjs.com/downloads/moment.js"></script>
 <script>
   	function playerFormatter(value, row) {
-    	return '<div class="row"><div class="col-1"><span class="team"><img height="20px" src="'+row.playerTeamImage+'" /></span></div><div class="col"><span class="name"> '+ value + '</span></div></div>';
+  		var playerTeamId = "";
+  		if (row.playerTeamId != null && row.playerTeamId != "-"){
+  			playerTeamId = " (" + row.playerTeamId + ")";
+  		}
+    	return '<div class="row"><div class="col-1"><span class="team"><img height="20px" src="'+row.playerTeamImage+'" /></span></div><div class="col"><span class="name"> '+ value + playerTeamId + '</span></div></div>';
   	}
   	function positionFormatter(value, row) {
   		return '<div class="row"><div class="col text-center"><span class="position player-'+ row.playerPositionId + '"> '+ row.playerPositionName + '</span></div></div>';
@@ -407,6 +411,7 @@
   		           url: "/fantasyJson/leagues",
   		           data: $formtoken.serialize() + "&updatedb=" + updatedb, // serializes the form's elements.
   		           dataType: 'json',
+  		           timeout: 0,
   		           success: function(data)
   		           {
 							var button_group1 = $('<div class="btn-group" role="group">');
@@ -472,6 +477,7 @@
   		           type: "GET",
   		           url: "/fantasyJson/ranking",
   		           data: "token="+$("#token").val()+"&league="+id,
+  		           timeout: 0,
   		           success: function(data)
   		           {
   		               $tableranking.bootstrapTable("refreshOptions",{
@@ -500,6 +506,7 @@
   		           type: "GET",
   		           url: "/fantasyJson/news",
   		           data: "league="+id,
+  		           timeout: 0,
   		           success: function(data)
   		           {
   		               $tablenews.bootstrapTable("refreshOptions",{
@@ -522,6 +529,7 @@
   		           type: "GET",
   		           url: "/fantasyJson/market",
   		           data: "token="+$("#token").val()+"&league="+id,
+  		           timeout: 0,
   		           success: function(data)
   		           {
   		               $tablemarket.bootstrapTable("refreshOptions",{
@@ -560,6 +568,7 @@
   		           type: "GET",
   		           url: "/fantasyJson/players",
   		           data: $formranking.serialize() + params, 
+  		           timeout: 0,
   		           success: function(data)
   		           {
 						$tableplayers.bootstrapTable("refreshOptions",{
